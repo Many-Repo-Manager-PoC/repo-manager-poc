@@ -35,6 +35,7 @@ export default defineConfig(({ command, mode }): UserConfig => {
     optimizeDeps: {
       // Put problematic deps that break bundling here, mostly those with binaries.
       // For example ['better-sqlite3'] if you use that in server functions.
+      include: ["@auth/qwik"],
       exclude: [],
     },
 
@@ -113,3 +114,4 @@ function errorOnDuplicatesPkgDeps(
     throw new Error(msg);
   }
 }
+

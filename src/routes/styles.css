@@ -20,7 +20,7 @@ html {
 }
 
 body {
-  background: var(--qwik-dark-background);
+  background: rgb(50 64 96);
   color: var(--qwik-dark-text);
   overflow-x: hidden;
 }
@@ -39,7 +39,7 @@ h1 {
 }
 h1 .highlight,
 h3 .highlight {
-  color: var(--qwik-light-blue);
+  color: rgb(214 233 217);
 }
 
 h2 {
@@ -122,12 +122,13 @@ ul {
 /* BUTTONS -------------------------------------- */
 a.button,
 button {
-  background: var(--qwik-light-blue);
+  background: rgb(233 90 81);
   border: none;
   border-radius: 8px;
   color: white;
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: 1rem;
+  font-weight: 600;
   padding: 15px 20px;
   text-align: center;
 }
