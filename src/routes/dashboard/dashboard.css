@@ -1,5 +1,14 @@
-.host {
+.grid {
     display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    justify-content: center;
+    max-width: 1200px;
+    margin: 0 auto; /* Add margin auto to center horizontally */
+  }
+
+.host {
+
   
     align-items: center;
     justify-content: center;
@@ -21,6 +30,8 @@
     margin-bottom: 60px;
   }
   
+
+
   .input {
     width: 60%;
   }

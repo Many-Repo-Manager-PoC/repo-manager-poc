@@ -1,7 +1,6 @@
 .root {
   width: 100%;
   max-width: 342px;
-  background-color: rgba(215, 233, 217, 255);
   border: 2px solid rgb(50, 64, 96);
   border-radius: 0.5rem;
   word-break: break-word;
@@ -91,16 +90,16 @@
 .background {
   background-color: #6B7280;
 }
-
 .language {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   border-radius: 9999px;
-  padding: 0.5rem 0.75rem; 
+  padding: 0.25rem 0.75rem;
   background-color: rgb(214 233 217);
   color: rgb(50, 64, 96);
   width: fit-content;
   align-items: center;
   margin: 0 auto;
+  height: 1.5rem;
 }
