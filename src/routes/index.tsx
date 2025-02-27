@@ -21,7 +21,7 @@ export default component$(() => {
           Sign in with <span class="highlight">GitHub</span>
         </h3>
 
-        <button style="padding-bottom: 1rem;" onClick$={() => signIn.submit({ providerId: 'github' })}>Sign In</button>
+        <button style="padding-bottom: 1rem;" onClick$={() => signIn.submit({ providerId: 'github',options: { redirectTo: '/dashboard' } })}>Sign In</button>
       </div>
     </>
   );
