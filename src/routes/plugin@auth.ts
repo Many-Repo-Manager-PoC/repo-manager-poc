@@ -1,7 +1,8 @@
 import { QwikAuth$ } from "@auth/qwik";
 import GitHub from "@auth/qwik/providers/github";
 
-export const { onRequest, useSession, useSignIn, useSignOut } = QwikAuth$(
+
+export const { onRequest, useSession, useSignIn, useSignOut, } = QwikAuth$(
   ({ env }) => ({
     secret: env.get('AUTH_SECRET'),
     trustHost: true,
@@ -10,7 +11,12 @@ export const { onRequest, useSession, useSignIn, useSignOut } = QwikAuth$(
       GitHub({
         clientId: env.get('AUTH_GITHUB_ID'),
         clientSecret: env.get('AUTH_GITHUB_SECRET'),
-      }),
+      authorization: {
+        params: {
+          scope: "read:user user:email repo"
+        }
+      }
+      })
     ],
     cookies:{
       pkceCodeVerifier: {
@@ -21,6 +27,19 @@ export const { onRequest, useSession, useSignIn, useSignOut } = QwikAuth$(
           path: "/",
           secure: true
         },
+      },
+    },
+    callbacks: {
+      async session({ token, session }) {
+        // @ts-ignore
+        session.user.accessToken = token.accessToken
+        return session
+      },
+      async jwt({ token, account }) {
+        if (account) {
+          token.accessToken = account.access_token
+        }
+        return token
       },
     },
   }),
