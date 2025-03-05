@@ -16,11 +16,40 @@ export const repoNames = {
   ];
   
   export const repos = [
-    "QwikDev/qwik",
-    "kunai-consulting/qwik-design-system",
-    "qwikifiers/qwik-ui", 
-    "kunai-consulting/builder-plugin-seo"
+    "qwik-design-system",
+    "builder-plugin-seo",
+    "qwik-design-system",
+    "qwik-ui",
+    "open-source",
+    "auto-api",
+    "qwik-router",
+    "many-repos",
+    "qwik-docs",
+    "qwik-optimizer",
+    "public-astro-PoC",
+    "fork-react-image-lightbox",
+    "ember-paper",
+    "KeyStor",
+    "sanity-plugin-gatsy-cloud-preview",
+    "ember-service-worker",
+    "ember-data-extensions",
+    "ember-cli-deploy-azure-blob",
+    "ember-service-worker-index",
+    "SocialDistance",
+    "SocialDistanceAlarm",
+    "covid-safe-paths",
+    "react-native-ble-advertiser",
+    "azure-sonar",
+    "hyperledger-JWT",
+    "kunai-ember-code-challenge",
+    "selenium-cucumber-js",
+    "swift-style-guide",
+    "ContactsPicker",
+    "grunt-mocha-phantom-istanbul",
+    "SmartAlert"
   ];
+
+  export const privateRepos = ["kunai-design-system"];
   
   export const contributors = [
     "PatrickJS",

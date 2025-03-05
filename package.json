@@ -13,7 +13,7 @@
   "type": "module",
   "scripts": {
     "build": "qwik build",
-    "build.client": "vite build",
+    "build.client": "vite build", 
     "build.preview": "vite build --ssr src/entry.preview.tsx",
     "build.server": "vite build -c adapters/cloudflare-pages/vite.config.ts",
     "build.types": "tsc --incremental --noEmit",
@@ -27,8 +27,9 @@
     "serve": "wrangler pages dev ./dist --compatibility-flags=nodejs_als",
     "start": "vite --open --mode ssr",
     "cf-typegen": "wrangler types",
-    "qwik": "qwik"
-  },
+    "qwik": "qwik",
+    "auth-secret": "echo \"AUTH_SECRET=$(openssl rand -base64 32)\" > .env.local"
+    },
   "devDependencies": {
     "@auth/qwik": "0.5.4",
     "@builder.io/qwik": "^1.12.0",
