@@ -14,6 +14,51 @@ export interface Repo {
     topics: string[];
   
   }
+
+  export interface Dependency {
+    sbom: {
+      spdxVersion: string;
+      dataLicense: string;
+      SPDXID: string;
+      relationshipType: string;
+      name: string;
+      documentNamespace: string;
+      creationInfo: {
+        created: string;
+        creators: string[];
+      };
+      packages: {
+        items: Package[];
+      };
+      relationships: {
+        dependencies: Dependency[];
+      };
+    };
+  }
+
+  // export interface Item {
+  //   name: {
+  //     dev: string;
+  //     license: string;
+  //     dependencies: string[];
+  //     integrity: string;
+  //     resolved: string;
+  //     version: string;
+  //     versionInfo: string;
+  //   }
+
+    
+  // }
+
+  export interface Package {
+    name: string;
+    downloadLocation: string;
+    versionInfo: string;
+    filesAnalyzed: boolean;
+    packages: {
+      items: Package[];
+    };
+  }
   
   export interface Member {
     id: number;

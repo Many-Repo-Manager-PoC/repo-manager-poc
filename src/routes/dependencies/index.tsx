@@ -4,10 +4,10 @@ import {
     useStore,
   } from "@builder.io/qwik";
   import { type DocumentHead } from "@builder.io/qwik-city";
-  import { type Repo } from "../../types/index";
+  import { type Dependency  } from "../../types/index";
   import { routeLoader$ } from "@builder.io/qwik-city";
   import { repos } from "../../types/consts";
-  
+  import packageLock from '../../../package-lock.json';
   
   export const useGetDependencies = routeLoader$(async (event) => {
     const session = event.sharedMap.get("session");
@@ -35,23 +35,29 @@ import {
       }));
 
       const validDependencies = allDependencies.filter(dep => dep !== null);
-      return validDependencies as Repo[];
+      return validDependencies as Dependency[];
     } catch (error) {
       console.error("Error fetching dependencies:", error);
-      return [] as Repo[];
+      return [] as Dependency[];
     }
   });
   
   
   export default component$(() => {
+    const dependencies =  useGetDependencies();
+    const packageNames = dependencies.value?.map(dependency => 
+        // @ts-ignore
+      dependency.sbom?.packages?.map((pkg:Package) => pkg.name) || []
+    ) || [];
+    console.log('Package names by dependency:', packageNames);
+    // console.log(dependencies.value[2].sbom?.packages[2].name);
+    const devDependencyNames = Object.keys(packageLock.packages[''].devDependencies);
+    console.log("devDependencyNames", devDependencyNames);
 
-    const dependencies = useGetDependencies();
-    console.log(dependencies.value);
-  
     const state = useStore({
-      count: 0,
-      number: 20,
-    });
+        count: 0,
+        number: 20,
+      });
   
     useVisibleTask$(({ cleanup }) => {
       const timeout = setTimeout(() => (state.count = 1), 500);
@@ -67,43 +73,65 @@ import {
         <h1>
           <span class="highlight">Repo</span> Dependencies
         </h1>
-  
+
         <div style={{
           display: 'flex',
+          flexWrap: 'wrap',
+          gap: '2rem',
           justifyContent: 'center',
-          width: '100%'
+          padding: '2rem'
         }}>
-          <table style={{
-            width: '80%',
-            maxWidth: '1200px',
-            borderCollapse: 'collapse', 
-            marginTop: '2rem',
-            backgroundColor: '#f5f5f5',
-            borderRadius: '8px',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-          }}>
-            <thead>
-              <tr style={{
-                backgroundColor: '#e0e0e0',
-                borderBottom: '2px solid #ddd'
+          {dependencies.value?.map((dependency, depIndex) => {
+            const repoPackageNames = packageNames[depIndex] || [];
+            const overlappingPackages = repoPackageNames.filter((name: string) => 
+              devDependencyNames.includes(name)
+            );
+
+            return (
+              <div key={dependency.sbom?.SPDXID} style={{
+                backgroundColor: '#f5f5f5',
+                borderRadius: '8px',
+                padding: '1.5rem',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                minWidth: '300px',
+                maxWidth: '400px'
               }}>
-                <th style={{padding: '1rem'}}>Name</th>
-                <th style={{padding: '1rem'}}>Version</th>
-                <th style={{padding: '1rem'}}>Packages</th>
-              </tr>
-            </thead>
-            <tbody>
-              {dependencies.value?.map((repo) => (
-                <tr key={repo.id} style={{
-                  borderBottom: '1px solid #ddd'
+                <h3 style={{
+                  margin: '0 0 1rem 0',
+                  color: 'black'
                 }}>
-                  <td style={{padding: '1rem', color: 'black'}}>{repo.sbom?.name?.split('/').pop() || '-'}</td>
-                  <td style={{padding: '1rem', color: 'black'}}>{repo.sbom?.version || '-'}</td>
-                  <td style={{padding: '1rem', color: 'black'}}>{repo.sbom?.packages?.items || '-'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  {dependency.sbom?.name?.split('/').pop() || '-'}
+                </h3>
+                
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.5rem'
+                }}>
+                  {overlappingPackages.map((packageName: string) => {
+                    const packageDetails = dependency.sbom?.packages?.items?.find(
+                      item => item.name === packageName
+                    );
+                    return (
+                      <div key={packageName} style={{
+                        backgroundColor: 'white',
+                        padding: '0.75rem',
+                        borderRadius: '4px',
+                        border: '1px solid #ddd'
+                      }}>
+                        <div style={{fontWeight: 'bold', color: 'black'}}>
+                          {packageName}
+                        </div>
+                        <div style={{color: '#666', fontSize: '0.9rem'}}>
+                          {packageDetails?.versionInfo || '-'}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     );

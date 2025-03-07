@@ -18,7 +18,6 @@ export const repoNames = {
   export const repos = [
     "qwik-design-system",
     "builder-plugin-seo",
-    "qwik-design-system",
     "qwik-ui",
     "open-source",
     "auto-api",
