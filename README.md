@@ -110,3 +110,92 @@ By default, the Cloudflare pages adaptor _does not_ include a `public/_routes.js
 In the above example, it's saying _all_ pages should be SSR'd. However, the root static files such as `/favicon.ico` and any static assets in `/build/*` should be excluded from the Functions, and instead treated as a static file.
 
 In most cases the generated `dist/_routes.json` file is ideal. However, if you need more granular control over each path, you can instead provide you're own `public/_routes.json` file. When the project provides its own `public/_routes.json` file, then the Cloudflare adaptor will not auto-generate the routes config and instead use the committed one within the `public` directory.
+
+
+## How to build this project for your own use
+
+### Step 1: Set up your new app as a Cloudflare app
+
+Run the following command:
+
+`npm create cloudflare@latest -- my-qwik-app --framework=qwik`
+
+refer to this [guide](https://developers.cloudflare.com/pages/framework-guides/deploy-a-qwik-site/) for more information.
+
+### Step 2: Set up your Github OAuth App
+
+Go to https://github.com/settings/developers and create a new OAuth App.
+
+***Make sure that the authorization callback URL is set to** `"homepage URL" + /auth/callback/github` i.e. 
+
+homepage URL = `http://localhost:1000/`
+
+then
+
+authorization callback URL = `http://localhost:1000/auth/callback/github`
+
+***MAKE SURE TO COPY THE CLIENT SECRET PROVIDED ONCE YOU CREATE THE OAUTH APP**
+
+### Step 3: Add client id/client secret to your github repo or other enviornment manager
+
+- If you haven't yet, push the new repository up to github. Upon doing so, go to `https://github.com/{user}/{repo}/settings/secrets/actions` and add both the client id and client seceret that was just created for the oauth app to your new repository under "Repository Secrets". If you use a diffent enviornment manager, you can place those variables there. 
+
+
+### Step 4: Modify/Create plugin@auth.ts
+
+
+paste the following code: 
+
+```
+
+import { QwikAuth$ } from "@auth/qwik";
+import GitHub from "@auth/qwik/providers/github";
+
+export const { onRequest, useSession, useSignIn, useSignOut, } = QwikAuth$(
+  ({ env }) => ({
+    secret: env.get('NEXTAUTH_SECRET'),
+    trustHost: true,
+    providers: [
+      GitHub({
+        clientId: env.get('AUTH_GITHUB_ID'),
+        clientSecret: env.get('AUTH_GITHUB_SECRET'),
+      authorization: {
+        params: {
+          scope: "read:user user:email repo"
+        }
+      }
+      })
+    ],
+    cookies:{
+      pkceCodeVerifier: {
+        name: "github.pkce.code_verifier",
+        options: {
+          httpOnly: true,
+          sameSite: 'none',
+          path: "/",
+          secure: true
+        },
+      },
+    },
+    callbacks: {
+      async session({ token, session }) {
+        // @ts-ignore
+        session.user.accessToken = token.accessToken
+        return session
+      },
+      async jwt({ token, account }) {
+        if (account) {
+          token.accessToken = account.access_token
+        }
+        return token
+      },
+    },
+  }),
+);
+```
+
+**Lines 65-75 are important in order to get back the AccessToken which you need in order to pass through all subsequent API calls**
+
+### Step 5: Get to work!
+
+You now have a fully functioning Qwik/Cloudflare/Github Oauth app that should be able to successuly make calls to the github api. 
