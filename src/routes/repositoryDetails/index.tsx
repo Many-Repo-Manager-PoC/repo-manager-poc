@@ -29,13 +29,9 @@ export default component$(() => {
           <h2 style={{
             textAlign: 'center'
           }}>
-             {repo?.value?.name || ''}
+             {repo.value.name || ''}
           </h2>
 
-          
-          
-
-          
           <div style={{ marginTop: '2rem' }}>
             <h3>Description</h3>
             <p>{repo.value.description || 'No description available'}</p>

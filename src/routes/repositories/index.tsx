@@ -1,37 +1,13 @@
 import {
     component$,
-    useVisibleTask$,
+    useTask$,
     useStore,
   } from "@builder.io/qwik";
   import { useNavigate } from "@builder.io/qwik-city";
   import { type DocumentHead } from "@builder.io/qwik-city";
   import Infobox from "../../components/starter/infobox/infobox";
-  import { type Repo } from "../../types/index";
-  import { routeLoader$ } from "@builder.io/qwik-city";
-  
-  
-  export const useGetRepos = routeLoader$(async (event) => {
-    const session = event.sharedMap.get("session");
-    const accessToken = session?.user?.accessToken;
-  
-    try {
-      const response = await fetch(`https://api.github.com/orgs/kunai-consulting/repos`, {
-        headers: {
-          Accept: "application/json",
-          "User-Agent": "Cloudflare Worker",
-          Authorization: `Bearer ${accessToken}`, 
-        },
-      });
-  
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-  
-      const repositories = await response.json();
-      return repositories as Repo[];
-    } catch (error) {
-      console.error("Error fetching repos:", error);
-      return [] as Repo[];
-    }
-  });
+  import { useGetRepos } from "../../api/getRepositories";
+  export { useGetRepos } from "../../api/getRepositories";
   
   
   export default component$(() => {
@@ -43,10 +19,9 @@ import {
       number: 20,
     });
   
-    useVisibleTask$(({ cleanup }) => {
+    useTask$(({ cleanup }) => {
       const timeout = setTimeout(() => (state.count = 1), 500);
       cleanup(() => clearTimeout(timeout));
-  
       const internal = setInterval(() => state.count++, 7000);
       cleanup(() => clearInterval(internal));
     });
