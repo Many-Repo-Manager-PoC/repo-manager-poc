@@ -11,7 +11,7 @@ export const useGetRepos = routeLoader$(async (event) => {
 
   try {
     const repositories = await Promise.all(metadata.repositories.map(async (repoName) => {
-      const response = await fetch(`https://api.github.com/repos/nabrams/${repoName}`, {
+      const response = await fetch(`https://api.github.com/repos/${metadata.owner}/${repoName}`, {
         headers: {
           Accept: "application/json",
           "User-Agent": "Cloudflare Worker",
