@@ -13,11 +13,11 @@ export default component$((infoboxProps: InfoboxProps) => {
   return (
     <div
       class={styles.root}
-      onClick$={() => infoboxProps.nav?.(infoboxProps.repo.html_url)}
+      onClick$={() => infoboxProps.nav?.(`/repositoryDetails?repo=${encodeURIComponent(JSON.stringify(infoboxProps.repo))}`)}
       key={repo.full_name}
     >
       <div class={styles.content}>
-        <div class={styles.title}>{infoboxProps.repo.name || 'hi'}</div>
+        <div class={styles.title}>{infoboxProps.repo.name || ''}</div>
         <div class={styles.description}>
           {infoboxProps.repo.description || ''}
         </div>
