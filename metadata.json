@@ -6,6 +6,7 @@
         "repo-with-also-one-dependency",
         "repo-with-all-dependencies"
       ],
+      "owner": "nabrams",
 
   "repo" :{ 
     "id": 368917877,

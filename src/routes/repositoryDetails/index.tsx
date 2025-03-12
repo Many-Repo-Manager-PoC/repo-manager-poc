@@ -1,24 +1,38 @@
 import {
   component$,
   useSignal,
+  useStore,
 } from "@builder.io/qwik";
 import { useLocation } from "@builder.io/qwik-city";
 import { type DocumentHead } from "@builder.io/qwik-city";
 import type { Repo } from "~/types";
+import { useGetDependenciesForSingleRepo } from "../../api/getDependencies";
+export { useGetDependenciesForSingleRepo } from "../../api/getDependencies";
+import { useGetRepo } from "../../api/getRepositories";
+export { useGetRepo } from "../../api/getRepositories";
 
 export default component$(() => {
   const loc = useLocation();
   const repo = useSignal<Repo | null>(null);
 
+  const state = useStore({
+    currentRepository: {},
+  });
+
+  useGetRepo();
+
+
   // Parse repo from URL parameter
   if (loc.url.searchParams.has('repo')) {
     try {
       repo.value = JSON.parse(decodeURIComponent(loc.url.searchParams.get('repo')!));
+      state.currentRepository = repo.value || {};
     } catch (e) {
       console.error('Failed to parse repo data:', e);
     }
   }
-
+  const dependencies = useGetDependenciesForSingleRepo();
+  console.log("dependencies", dependencies.value);
   return (
     <div class="container">
       {repo.value ? (

@@ -48,7 +48,7 @@ import {
         }}>
           {repoDependencies.value?.map((dependency, depIndex) => {
             const repoPackageNames = packageJsons.value[depIndex]?.devDependencies ? Object.keys(packageJsons.value[depIndex].devDependencies) : [];
-            console.log("THE DEPENDENCY FOR THIS REPO", dependency);
+            // console.log("THE DEPENDENCY FOR THIS REPO", dependency);
             // Skip rendering if no dependencies
             if (repoPackageNames.length === 0) return null;
 
@@ -79,7 +79,7 @@ import {
                     const packageDetails = dependency.sbom?.packages?.find(
                       (item: { name: string }) => item.name === packageName_str
                     );
-                    console.log("PACKAGE DETAILS", packageDetails);
+                    // console.log("PACKAGE DETAILS", packageDetails);
                     return (
                       <div key={packageName_str} style={{
                         backgroundColor: 'white',
