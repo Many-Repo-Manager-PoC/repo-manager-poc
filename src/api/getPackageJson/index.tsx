@@ -3,7 +3,7 @@
   import { type PackageJson } from "../../types/index";
   import { useGetDependenciesForRepo } from "../getDependencies";
   export { useGetDependenciesForRepo } from "../getDependencies";
-
+  import metadata from "../../../metadata.json";
   
   // this gets the package.json for each repo
   // although the package.json must be at the root of the repo or it will not work
@@ -16,7 +16,7 @@
     try {
       const packageJsons:PackageJson[] = await Promise.all(event.sharedMap.get('repos').map(async (repo: string) => {
         try {
-          const response = await fetch(`https://api.github.com/repos/kunai-consulting/${repo}/contents/package.json`, {
+          const response = await fetch(`https://api.github.com/repos/${metadata.owner}/${repo}/contents/package.json`, {
             headers: {
               Accept: "application/json",
               "User-Agent": "Cloudflare Worker", 

@@ -2,6 +2,7 @@ import { type Dependency } from "../../types/index";
 import { routeLoader$ } from "@builder.io/qwik-city";
 import { useGetReposForDependencies } from "../getRepositories";
 export { useGetReposForDependencies } from "../getRepositories";
+import metadata from "../../../metadata.json";
 // import { useGetRepo } from "../getRepositories";
 // export { useGetRepo } from "../getRepositories";
 
@@ -15,7 +16,7 @@ export const useGetDependenciesForRepo = routeLoader$(async (event) => {
   try {
     const allDependencies = await Promise.all(event.sharedMap.get('repos').map(async (repo: string) => {
       try {
-        const response = await fetch(`https://api.github.com/repos/kunai-consulting/${repo}/dependency-graph/sbom`, {
+        const response = await fetch(`https://api.github.com/repos/${metadata.owner}/${repo}/dependency-graph/sbom`, {
           headers: {
             Accept: "application/json",
             "User-Agent": "Cloudflare Worker", 
@@ -58,7 +59,7 @@ export const useGetDependenciesForSingleRepo = routeLoader$(async (event) => {
   
 //   const repo = await event.sharedMap.get('currentRepository');
   try {
-    const response = await fetch(`https://api.github.com/repos/kunai-consulting/${repo}/dependency-graph/sbom`, {
+    const response = await fetch(`https://api.github.com/repos/${metadata.owner}/${repo}/dependency-graph/sbom`, {
       headers: {
         Accept: "application/json",
         "User-Agent": "Cloudflare Worker",

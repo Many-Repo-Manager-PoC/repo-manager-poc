@@ -38,7 +38,7 @@ export const useGetRepos = routeLoader$(async (event) => {
     const session = event.sharedMap.get("session");
     const accessToken = session?.user?.accessToken;
     try {
-        const response = await fetch(`https://api.github.com/orgs/kunai-consulting/repos`, {
+        const response = await fetch(`https://api.github.com/users/${metadata.owner}/repos`, {
             headers: {
             Accept: "application/json", 
             "User-Agent": "Cloudflare Worker",
@@ -67,7 +67,7 @@ export const useGetRepo = routeLoader$(async (event) => {
     const repo = event.params.repo;
   
     try {
-      const response = await fetch(`https://api.github.com/orgs/kunai-consulting/repos/${repo}`, {
+      const response = await fetch(`https://api.github.com/users/${metadata.owner}/repos/${repo}`, {
         headers: {
           Accept: "application/json",
           "User-Agent": "Cloudflare Worker",
