@@ -1,8 +1,10 @@
-import { component$ } from "@builder.io/qwik";
+import { component$, createContextId, useContextProvider, useContext } from "@builder.io/qwik";
 import styles from "./infobox.module.css";
 import { repo } from "../../../types/consts";
 import { RouteNavigate } from "@builder.io/qwik-city";
 import type { Repo } from "../../../types/index";
+
+export const RepoContext = createContextId<Repo>('repo-context');
 
 export interface InfoboxProps {
   repo: Repo;
@@ -10,29 +12,32 @@ export interface InfoboxProps {
 }
 
 export default component$((infoboxProps: InfoboxProps) => {
+  useContextProvider(RepoContext, infoboxProps.repo);
+  const repoContext = useContext(RepoContext);
+
   return (
     <div
       class={styles.root}
-      onClick$={() => infoboxProps.nav?.(`/repositoryDetails?repo=${encodeURIComponent(JSON.stringify(infoboxProps.repo))}`)}
+      onClick$={() => infoboxProps.nav?.(`/repositoryDetails?repo=${repoContext.name}`)}
       key={repo.full_name}
     >
       <div class={styles.content}>
-        <div class={styles.title}>{infoboxProps.repo.name || ''}</div>
+        <div class={styles.title}>{repoContext.name || ''}</div>
         <div class={styles.description}>
-          {infoboxProps.repo.description || ''}
+          {repoContext.description || ''}
         </div>
 
-        {infoboxProps.repo.language && (
+        {repoContext.language && (
           <div class={styles.language}>
-            <p>{infoboxProps.repo.language}</p>
+            <p>{repoContext.language}</p>
           </div>
         )}
         <div class={styles.label}>
           <div class={styles.footer}>
             <div class={styles.item}>Last Updated:</div>
             <div class={styles.value}>
-              {infoboxProps.repo.updated_at
-                ? new Date(infoboxProps.repo.updated_at).toDateString()
+              {repoContext.updated_at
+                ? new Date(repoContext.updated_at).toDateString()
                 : ''}
             </div>
           </div>

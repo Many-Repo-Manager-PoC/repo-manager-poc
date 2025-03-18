@@ -1,32 +1,19 @@
 import {
     component$,
-    useTask$,
-    useStore,
+    useContext,
   } from "@builder.io/qwik";
   import { useNavigate } from "@builder.io/qwik-city";
   import { type DocumentHead } from "@builder.io/qwik-city";
   import Infobox from "../../components/starter/infobox/infobox";
-  import { useGetRepos } from "../../api/getRepositories";
-  export { useGetRepos } from "../../api/getRepositories";
-  
+  import { ServerDataContext } from "../layout";
+  import type { Repo } from "../../types/index";
   
   export default component$(() => {
     const nav = useNavigate();
-    const repos = useGetRepos();
-  
-    const state = useStore({
-      count: 0,
-      number: 20,
-    });
-  
-    useTask$(({ cleanup }) => {
-      const timeout = setTimeout(() => (state.count = 1), 500);
-      cleanup(() => clearTimeout(timeout));
-      const internal = setInterval(() => state.count++, 7000);
-      cleanup(() => clearInterval(internal));
-    });
-  
+    const serverData = useContext(ServerDataContext);
+
     return (
+      
       <div class="container container-center">
         <div role="presentation" class="ellipsis"></div>
         <h1>
@@ -39,9 +26,12 @@ import {
           gap: '1rem',
           width: '100%'
         }}>
-          {repos.value?.map((repo) => (
-            <Infobox repo={repo} nav={nav} key={repo.id}></Infobox>
-          ))}
+          {/* @ts-ignore */}
+          {serverData.repos.map((repo: Repo) => {
+            return (
+              <Infobox repo={repo} nav={nav} key={repo.id}></Infobox>
+            );
+          })}
         </div>
       </div>
     );
@@ -50,5 +40,3 @@ import {
   export const head: DocumentHead = {
     title: "Repositories",
   };
-  
-  

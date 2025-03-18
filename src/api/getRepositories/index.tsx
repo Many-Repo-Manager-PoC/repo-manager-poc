@@ -1,17 +1,22 @@
 import { type Repo } from "../../types/index";
 import { routeLoader$ } from "@builder.io/qwik-city";
-import { repo } from "../../types/consts";
 import metadata from "../../../metadata.json";
 
-
+// gets all repos from the given owner and given list of repos in metadata.json
 // eslint-disable-next-line qwik/loader-location
 export const useGetRepos = routeLoader$(async (event) => {
   const session = event.sharedMap.get("session");
   const accessToken = session?.user?.accessToken;
 
+  // Set initial state in shared map
+  event.sharedMap.set('repos', metadata.repositories);
+  const urls = metadata.repositories.map((repoName) => `https://api.github.com/repos/${metadata.owner}/${repoName}`);
+
+
+
   try {
-    const repositories = await Promise.all(metadata.repositories.map(async (repoName) => {
-      const response = await fetch(`https://api.github.com/repos/${metadata.owner}/${repoName}`, {
+    const repositories = await Promise.all(urls.map(async (url) => {
+      const response = await fetch(url, {
         headers: {
           Accept: "application/json",
           "User-Agent": "Cloudflare Worker",
@@ -20,8 +25,12 @@ export const useGetRepos = routeLoader$(async (event) => {
       });
 
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-
       return await response.json();
+
+    /// these 3 lines are for getting the repo names from the repose 
+    //   const reposData: { name: string }[] = await response.json();
+    //   const repoNames = reposData.map((repo: { name: string }) => repo.name);
+    //   event.sharedMap.set('repos', repoNames);
     }));
 
     return repositories as Repo[];
@@ -31,43 +40,15 @@ export const useGetRepos = routeLoader$(async (event) => {
   }
 });
 
-  //this gets all the repos from the org
-  //would like to be able to pass in the org name as a param or take it from the session
-  // eslint-disable-next-line qwik/loader-location
-  export const useGetReposForDependencies = routeLoader$(async (event) => {
-    const session = event.sharedMap.get("session");
-    const accessToken = session?.user?.accessToken;
-    try {
-        const response = await fetch(`https://api.github.com/users/${metadata.owner}/repos`, {
-            headers: {
-            Accept: "application/json", 
-            "User-Agent": "Cloudflare Worker",
-            Authorization: `Bearer ${accessToken}`,
-            },
-        });
-
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    
-            const reposData: { name: string }[] = await response.json();
-            const repoNames = reposData.map((repo: { name: string }) => repo.name);
-            event.sharedMap.set('repos', repoNames);
-   
-            return repoNames;
-        } catch (error) {
-            console.error(`Error fetching dependencies for ${repo}:`, error);
-            return null;
-    }
-});
-
-
+// gets a single repo
 // eslint-disable-next-line qwik/loader-location
 export const useGetRepo = routeLoader$(async (event) => {
     const session = event.sharedMap.get("session");
     const accessToken = session?.user?.accessToken;
-    const repo = event.params.repo;
+    const repo = event.sharedMap.get("repos");
   
     try {
-      const response = await fetch(`https://api.github.com/users/${metadata.owner}/repos/${repo}`, {
+      const response = await fetch(`https://api.github.com/repos/${metadata.owner}/${repo.name}`, {
         headers: {
           Accept: "application/json",
           "User-Agent": "Cloudflare Worker",
@@ -79,9 +60,10 @@ export const useGetRepo = routeLoader$(async (event) => {
   
       const currentRepository = await response.json();
       event.sharedMap.set('currentRepository', currentRepository);
-      return currentRepository as Repo;
+
+      return currentRepository as string[]; // Return repo name as string array
     } catch (error) {
       console.error("Error fetching repos:", error);
-      return {} as Repo;
+      return [] as string[]; // Return empty string array on error
     }
   });

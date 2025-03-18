@@ -7,7 +7,13 @@
         "repo-with-all-dependencies"
       ],
       "owner": "nabrams",
-
+      "dependencyPaths": [
+        "repo-with-one-dependency",
+        "repo-with-two-dependencies",
+        "repo-with-no-dependencies",
+        "repo-with-also-one-dependency",
+        "repo-with-all-dependencies"
+      ],
   "repo" :{ 
     "id": 368917877,
     "node_id": "MDEwOlJlcG9zaXRvcnkzNjg5MTc4Nzc=",

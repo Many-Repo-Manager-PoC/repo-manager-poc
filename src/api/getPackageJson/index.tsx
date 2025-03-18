@@ -1,20 +1,20 @@
-
   import { routeLoader$ } from "@builder.io/qwik-city";
   import { type PackageJson } from "../../types/index";
   import { useGetDependenciesForRepo } from "../getDependencies";
   export { useGetDependenciesForRepo } from "../getDependencies";
   import metadata from "../../../metadata.json";
   
-  // this gets the package.json for each repo
+  // this gets the package.json for a single repo
   // although the package.json must be at the root of the repo or it will not work
   // eslint-disable-next-line qwik/loader-location
   export const useGetPackageJson = routeLoader$(async (event) => {
     const session = event.sharedMap.get("session");
     const accessToken = session?.user?.accessToken;
+    const repos = metadata.dependencyPaths;
     await event.resolveValue(useGetDependenciesForRepo) || [];
 
     try {
-      const packageJsons:PackageJson[] = await Promise.all(event.sharedMap.get('repos').map(async (repo: string) => {
+      const packageJsons:PackageJson[] = await Promise.all(repos.map(async (repo: string) => {
         try {
           const response = await fetch(`https://api.github.com/repos/${metadata.owner}/${repo}/contents/package.json`, {
             headers: {
