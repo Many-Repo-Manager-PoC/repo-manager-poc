@@ -2,6 +2,7 @@ export interface Repo {
     id: number;
     full_name: string;
     name: string;
+    repo: string;
     html_url: string;
     url: string;
     language: string;
@@ -12,6 +13,10 @@ export interface Repo {
     watchers_count: number;
     homepage: string;
     topics: string[];
+    open_issues_count: number;
+    license: {
+      name: string;
+    };
   
   }
 
@@ -41,6 +46,7 @@ export interface Repo {
     version: string;
     dependencies: Record<string, string>;
     devDependencies: Record<string, string>;
+    repo: string;
   }
   // export interface Item {
   //   name: {
