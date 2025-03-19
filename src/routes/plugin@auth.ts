@@ -3,7 +3,6 @@ import GitHub from "@auth/qwik/providers/github";
 
 export const { onRequest, useSession, useSignIn, useSignOut, } = QwikAuth$(
   ({ env }) => ({
-    secret: env.get('NEXTAUTH_SECRET'),
     trustHost: true,
     useSecureCookies: env.get('VITE_SSL') === 'true',
     providers: [
@@ -12,7 +11,9 @@ export const { onRequest, useSession, useSignIn, useSignOut, } = QwikAuth$(
         clientSecret: env.get('AUTH_GITHUB_SECRET'),
       authorization: {
         params: {
-          scope: "read:user user:email repo"
+          scope: "read:user user:email repo",
+          clientId: env.get('AUTH_GITHUB_ID'),
+          clientSecret: env.get('AUTH_GITHUB_SECRET'),
         }
       }
       })

@@ -1,0 +1,56 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.filterContainer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  align-items: center;
+  gap: 1rem;
+}
+
+.tagsLabel {
+  font-size: 1rem;
+  font-weight: 500;
+  color: white;
+  margin-right: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.searchInput {
+  padding: 0.75rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #d0d7de;
+  width: 100%;
+  max-width: 400px;
+  background-color: #f6f8fa;
+}
+
+.clearButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 3rem;
+  padding: 0.2rem;
+  color: white;
+  font-weight: 100;
+}
+
+.repoGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  width: 100%;
+}
+
+.repoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
