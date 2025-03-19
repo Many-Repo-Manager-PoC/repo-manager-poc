@@ -3,6 +3,7 @@ import styles from "./infobox.module.css";
 import { repo } from "../../../types/consts";
 import { RouteNavigate } from "@builder.io/qwik-city";
 import type { Repo } from "../../../types/index";
+import Topics from "../topics/topics";
 
 export const RepoContext = createContextId<Repo>('repo-context');
 
@@ -97,6 +98,17 @@ export default component$((infoboxProps: InfoboxProps) => {
               }}>
                 ⚠ {repoContext.open_issues_count}
               </div>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <span style={{
+            fontSize: '0.8rem',
+            fontWeight: '500',
+            color: '#57606a',
+            marginRight: '0.5rem'
+          }}>
+            Tags:
+          </span>
+          <Topics repo={repoContext} nav={infoboxProps.nav} />
         </div>
       </div>
     </div>

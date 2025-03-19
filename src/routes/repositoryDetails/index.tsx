@@ -2,16 +2,18 @@ import {
   component$,
   useContext,
 } from "@builder.io/qwik";
-import { type DocumentHead } from "@builder.io/qwik-city";
+import { useNavigate, type DocumentHead } from "@builder.io/qwik-city";
 import { useLocation } from "@builder.io/qwik-city";
 import { ServerDataContext } from "../layout";
 import Dependency from "../../components/starter/dependency/dependency";
+import Topics from "../../components/starter/topics/topics";
+
 
 export default component$(() => {
   const location = useLocation();
   const repoName = location.url.searchParams.get('repo');
   const serverData = useContext(ServerDataContext);
-
+  const nav = useNavigate();
   const repo = serverData.repos.find(r => r.name === repoName);
   const repoDependencies = serverData.dependencies;
   const packageJsons = serverData.packageJsons;
@@ -62,6 +64,17 @@ export default component$(() => {
               {repo.description || 'No description available'}
             </div>
 
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+          <span style={{
+            fontSize: '0.8rem',
+            fontWeight: '500',
+            color: '#57606a',
+            marginRight: '0.5rem'
+          }}>
+            Tags:
+          </span>
+          <Topics repo={repo} nav={nav} />
+        </div>
             <div style={{
               display: 'flex',
               gap: '1rem',
