@@ -12,6 +12,10 @@ import Topics from "../../components/starter/topics/topics";
 import { Modal } from '@qwik-ui/headless';
 import styles from "./repositoryDetails.css?inline";
 
+import { usePutTopics } from "../../api/putTopics";
+export  {usePutTopics } from "../../api/putTopics";
+
+
 export default component$(() => {
   const location = useLocation();
   const repoName = location.url.searchParams.get('repo');
@@ -21,6 +25,8 @@ export default component$(() => {
   const repoDependencies = serverData.dependencies;
   const packageJsons = serverData.packageJsons;
   const tags = useSignal<string[]>(repo?.topics || []);
+  const action = usePutTopics();
+
   useStyles$(styles);
 
   // Filter dependencies for current repo
@@ -53,7 +59,7 @@ export default component$(() => {
                 <span class="tagsLabelText">
                   Tags:
                 </span>
-                <Topics repo={repo} nav={nav} />
+                <Topics topics={tags.value} nav={nav} />
               </div>
 
               <Modal.Root>
@@ -93,6 +99,10 @@ export default component$(() => {
                         );
                         const remainingTags = tags.value.filter(t => !tagsToRemove.includes(t));
                         tags.value = [...new Set([...remainingTags, ...newTags])];
+                        action.submit({
+                            repo: repo.name,
+                            topics: tags.value
+                          })
                       }}
                       type="button"
                       class="modalClose"
