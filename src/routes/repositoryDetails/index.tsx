@@ -83,7 +83,22 @@ export default component$(() => {
 
                   <footer>
                     <Modal.Close type="button" class="modalClose">Cancel</Modal.Close>
-                    <Modal.Close type="button" class="modalClose">Save Changes</Modal.Close>
+                    <Modal.Close
+                      onClick$={() => {
+                        const inputEl = document.querySelector('.tagInput') as HTMLInputElement;
+                        const newTags = inputEl?.value.split(',').map(t => t.trim()).filter(Boolean);
+                        const checkedBoxes = document.querySelectorAll('.removeTag:checked');
+                        const tagsToRemove = Array.from(checkedBoxes).map(box =>
+                          (box.parentElement?.querySelector('span')?.textContent || '')
+                        );
+                        const remainingTags = tags.value.filter(t => !tagsToRemove.includes(t));
+                        tags.value = [...new Set([...remainingTags, ...newTags])];
+                      }}
+                      type="button"
+                      class="modalClose"
+                    >
+                      Save Changes
+                    </Modal.Close>
                   </footer>
                 </Modal.Panel>
               </Modal.Root>

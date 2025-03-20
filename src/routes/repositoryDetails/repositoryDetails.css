@@ -124,7 +124,7 @@
     font-size: 1rem;
     font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.2s;
+
     line-height: 20px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
@@ -173,7 +173,6 @@
     border-radius: 4px;
 
 }
-
 
 .modalPanel .tagInput {
     background-color:white;
