@@ -38,19 +38,6 @@
   margin-right: 0.5rem;
 }
 
-.modalPanel {
-  background-color: rgb(50 64 96);
-  color: white;
-  border: 1px solid rgba(27,31,35,.15);
-  border-radius: 6px;
-  padding: 5px 16px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  line-height: 20px;
-}
-
 .detailsContainer {
   display: flex;
   flex-direction: column;
@@ -126,4 +113,72 @@
 
 .notFoundText {
   color: white;
+}
+
+.modalPanel {
+    background-color: rgb(214 233 217);
+    color: black;
+    border: 1px solid rgba(27,31,35,.15);
+    border-radius: 0.5rem;
+    padding: 16px 24px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    line-height: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+.modalTrigger {
+    background-color: rgb(50 64 96);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+
+.modalClose {
+    background: none;
+    color: black;
+    padding: 8px 16px;
+    border-radius: 4px;
+    margin-top: 1rem;
+}
+
+.tagsList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.modalDescription {
+    color: black;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.modalTitle {
+    color: black;
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+.removeTag {
+    background-color: rgb(50 64 96);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+
+}
+
+
+.modalPanel .tagInput {
+    background-color:white;
+    color: black;
+    padding: 0.5rem;
+    width: 80%;
+
 }

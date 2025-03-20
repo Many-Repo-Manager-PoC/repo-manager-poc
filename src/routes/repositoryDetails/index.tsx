@@ -2,13 +2,14 @@ import {
   component$,
   useContext,
   useStyles$,
+  useSignal,
 } from "@builder.io/qwik";
 import { useNavigate, type DocumentHead } from "@builder.io/qwik-city";
 import { useLocation } from "@builder.io/qwik-city";
 import { ServerDataContext } from "../layout";
 import Dependency from "../../components/starter/dependency/dependency";
 import Topics from "../../components/starter/topics/topics";
-import { Modal, Label } from '@qwik-ui/headless';
+import { Modal } from '@qwik-ui/headless';
 import styles from "./repositoryDetails.css?inline";
 
 export default component$(() => {
@@ -19,10 +20,11 @@ export default component$(() => {
   const repo = serverData.repos.find(r => r.name === repoName);
   const repoDependencies = serverData.dependencies;
   const packageJsons = serverData.packageJsons;
+  const tags = useSignal<string[]>(repo?.topics || []);
   useStyles$(styles);
 
   // Filter dependencies for current repo
-  const currentRepoDependencies = repo ? 
+  const currentRepoDependencies = repo ?
     repoDependencies?.filter((_, index) => {
       return packageJsons[index]?.repo === repoName;
     }) : [];
@@ -55,23 +57,33 @@ export default component$(() => {
               </div>
 
               <Modal.Root>
-                <Modal.Trigger>Manage Tags</Modal.Trigger>
+                <Modal.Trigger class="modalTrigger">Manage Tags</Modal.Trigger>
                 <Modal.Panel class={`modal-panel modalPanel`}>
-                  <Modal.Title>Edit Profile</Modal.Title>
-                  <Modal.Description>
-                    You can update your profile here. Hit the save button when finished.
+                  <Modal.Title class="modalTitle">Add/Remove Tags</Modal.Title>
+                  <Modal.Description class="modalDescription">
+                    Select tag(s) to remove from the repository:
                   </Modal.Description>
-                  <Label>
-                    Name
-                    <input type="text" placeholder="John Doe" />
-                  </Label>
-                  <Label>
-                    Email
-                    <input type="text" placeholder="johndoe@gmail.com" />
-                  </Label>
+                  <div class="tagsList">
+                    {tags.value.map((topic) => (
+                      <div key={topic} class="tagItem">
+                        <span>{topic}</span>
+                        <input type="checkbox" class="removeTag" />
+                      </div>
+                    ))}
+                  </div>
+
+                  <Modal.Description class="modalDescription">
+                    Enter tags to add to Repository:
+                  </Modal.Description>
+                  <input
+                    type="text"
+                    placeholder="Enter tags separated by commas"
+                    class="modalPanel tagInput"
+                  />
+
                   <footer>
-                    <Modal.Close class="modal-close">Cancel</Modal.Close>
-                    <Modal.Close class="modal-close">Save Changes</Modal.Close>
+                    <Modal.Close type="button" class="modalClose">Cancel</Modal.Close>
+                    <Modal.Close type="button" class="modalClose">Save Changes</Modal.Close>
                   </footer>
                 </Modal.Panel>
               </Modal.Root>
@@ -104,7 +116,7 @@ export default component$(() => {
                 </div>
               </div>
 
-              <a 
+              <a
                 href={repo.html_url}
                 target="_blank"
                 rel="noopener noreferrer"
