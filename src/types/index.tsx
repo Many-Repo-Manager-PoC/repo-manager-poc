@@ -48,19 +48,36 @@ export interface Repo {
     devDependencies: Record<string, string>;
     repo: string;
   }
-  // export interface Item {
-  //   name: {
-  //     dev: string;
-  //     license: string;
-  //     dependencies: string[];
-  //     integrity: string;
-  //     resolved: string;
-  //     version: string;
-  //     versionInfo: string;
-  //   }
 
-    
-  // }
+
+
+  export interface NewRepository {
+    repoName: string;
+    repoDescription?: string;
+    homepage?: string;
+    isPrivate?: boolean;
+    visibility?: string;
+    hasIssues?: boolean;
+    hasProjects?: boolean;
+    hasWiki?: boolean;
+    hasDownloads?: boolean;
+    isTemplate?: boolean;
+    teamId?: number;
+    autoInit?: boolean;
+    gitignoreTemplate?: string;
+    licenseTemplate?: string;
+    allowSquashMerge?: boolean;
+    allowMergeCommit?: boolean;    
+    allowRebaseMerge?: boolean;
+    allowAutoMerge?: boolean;
+    deleteBranchOnMerge?: boolean;
+    useSquashPrTitleAsDefault?: boolean;
+    squashMergeCommitTitle?: string;
+    squashMergeCommitMessage?: string;
+    mergeCommitTitle?: string;
+    mergeCommitMessage?: string;
+    customProperties?: Record<string, string>;
+  }
 
   export interface Package {
     name: string;

@@ -44,6 +44,17 @@ export default component$(() => {
         >
           View Repositories
         </button>
+
+        <button
+          onClick$={() => nav('/createRepositories')}
+          style={{
+            padding: '1rem 2rem',
+            fontSize: '1.2rem',
+            cursor: 'pointer'
+          }}
+        >
+          Create Repository
+        </button>
       </div>
     </div>
   );

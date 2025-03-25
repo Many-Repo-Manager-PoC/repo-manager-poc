@@ -9,16 +9,14 @@ export const { onRequest, useSession, useSignIn, useSignOut, } = QwikAuth$(
       GitHub({
         clientId: env.get('AUTH_GITHUB_ID'),
         clientSecret: env.get('AUTH_GITHUB_SECRET'),
-      authorization: {
-        params: {
-          scope: "read:user user:email repo",
-          clientId: env.get('AUTH_GITHUB_ID'),
-          clientSecret: env.get('AUTH_GITHUB_SECRET'),
+        authorization: {
+          params: {
+            scope: "read:user user:email repo",
+          }
         }
-      }
       })
     ],
-    cookies:{
+    cookies: {
       pkceCodeVerifier: {
         name: "github.pkce.code_verifier",
         options: {
