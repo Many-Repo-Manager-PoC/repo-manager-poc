@@ -1,7 +1,7 @@
 import { QwikAuth$ } from "@auth/qwik";
 import GitHub from "@auth/qwik/providers/github";
 
-export const { onRequest, useSession, useSignIn, useSignOut, } = QwikAuth$(
+export const { onRequest, useSession, useSignIn, useSignOut} = QwikAuth$(
   ({ env }) => ({
     trustHost: true,
     useSecureCookies: env.get('VITE_SSL') === 'true',

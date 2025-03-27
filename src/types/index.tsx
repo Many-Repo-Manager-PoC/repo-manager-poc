@@ -77,6 +77,7 @@ export interface Repo {
     mergeCommitTitle?: string;
     mergeCommitMessage?: string;
     customProperties?: Record<string, string>;
+    hasDiscussions?: boolean;
   }
 
   export interface Package {

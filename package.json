@@ -35,6 +35,7 @@
     "@builder.io/qwik": "^1.12.0",
     "@builder.io/qwik-city": "^1.12.0",
     "@cloudflare/workers-types": "^4.20250224.0",
+    "@modular-forms/qwik": "^0.29.1",
     "@qwik-ui/headless": "^0.6.5",
     "@qwik-ui/utils": "^0.3.1",
     "@types/eslint": "8.56.10",
@@ -48,11 +49,10 @@
     "undici": "*",
     "vite": "5.3.5",
     "vite-tsconfig-paths": "^4.2.1",
-    "wrangler": "^3.0.0",
-    "@modular-forms/qwik": "^0.29.1"
+    "wrangler": "^3.0.0"
   },
   "dependencies": {
-
-    "@octokit/rest": "^21.1.1"
+    "@octokit/rest": "^21.1.1",
+    "octokit": "^4.1.2"
   }
 }

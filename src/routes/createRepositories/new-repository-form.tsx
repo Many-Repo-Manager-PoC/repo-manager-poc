@@ -1,33 +1,31 @@
 import { component$, useStyles$, useSignal, $ } from "@builder.io/qwik";
 import { GithubLicenses } from "../../types/consts";
-import { type NewRepository } from "../../types/index";
 import { usePostNewUserRepository } from "../../api/postNewRepository";
 export { usePostNewUserRepository } from "../../api/postNewRepository";
 import { useForm, zodForm$ } from "@modular-forms/qwik";
 import { z } from "zod";
-
 import styles from "./createRepositories.css?inline";
 
 const newRepositorySchema = z.object({
   repoName: z.string().min(1, "Repository name is required"),
   repoDescription: z.string().optional(),
   homepage: z.string().url().optional(),
-  visibility: z.enum(["public", "private"]),
-  hasIssues: z.boolean().default(true),
-  hasProjects: z.boolean().default(true),
-  hasWiki: z.boolean().default(true),
-  hasDownloads: z.boolean().default(true),
-  isTemplate: z.boolean().default(false),
+  visibility: z.enum(["public", "private"]).default("public").optional(),
+  hasIssues: z.boolean().default(true).optional(),
+  hasProjects: z.boolean().default(true).optional(),
+  hasWiki: z.boolean().default(true).optional(),
+  hasDownloads: z.boolean().default(true).optional(),
+  isTemplate: z.boolean().default(false).optional(),
   teamId: z.number().optional(),
-  autoInit: z.boolean().default(false),
+  autoInit: z.boolean().default(false).optional(),
   gitignoreTemplate: z.string().optional(),
   licenseTemplate: z.string().optional(),
-  allowSquashMerge: z.boolean().default(true),
-  allowMergeCommit: z.boolean().default(true),
-  allowRebaseMerge: z.boolean().default(true),
-  allowAutoMerge: z.boolean().default(false),
-  deleteBranchOnMerge: z.boolean().default(false),
-  useSquashPrTitleAsDefault: z.boolean().default(false),
+  allowSquashMerge: z.boolean().default(true).optional(),
+  allowMergeCommit: z.boolean().default(true).optional(),
+  allowRebaseMerge: z.boolean().default(true).optional(),
+  allowAutoMerge: z.boolean().default(false).optional(),
+  deleteBranchOnMerge: z.boolean().default(false).optional(),
+  useSquashPrTitleAsDefault: z.boolean().default(false).optional(),
   squashMergeCommitTitle: z.string().optional(),
   squashMergeCommitMessage: z.string().optional(),
   mergeCommitTitle: z.string().optional(),
@@ -46,27 +44,27 @@ export const NewRepositoryForm = component$(({ repoType }: { repoType: string })
       value: {
         repoName: "",
         visibility: "public",
+        repoDescription: "",
+        homepage: "",
         hasIssues: true,
         hasProjects: true,
         hasWiki: true,
         hasDownloads: true,
+        isTemplate: false,
+        teamId: undefined,
+        autoInit: false,
+        gitignoreTemplate: "",
+        licenseTemplate: "",
         allowSquashMerge: true,
         allowMergeCommit: true,
         allowRebaseMerge: true,
-        isTemplate: false,
-        autoInit: false,
         allowAutoMerge: false,
         deleteBranchOnMerge: false,
         useSquashPrTitleAsDefault: false,
-        squashMergeCommitTitle: undefined,
-        squashMergeCommitMessage: undefined,
-        mergeCommitTitle: undefined,
-        mergeCommitMessage: undefined,
-        repoDescription: "",
-        homepage: "",
-        teamId: undefined,
-        gitignoreTemplate: "",
-        licenseTemplate: ""
+        squashMergeCommitTitle: "",
+        squashMergeCommitMessage: "",
+        mergeCommitTitle: "",
+        mergeCommitMessage: ""
       }
     },
     validate: zodForm$(newRepositorySchema)
@@ -75,11 +73,12 @@ export const NewRepositoryForm = component$(({ repoType }: { repoType: string })
   const handleSubmit = $((values: NewRepositoryForm) => {
     isPending.value = true;
     try {
-      const newRepository: NewRepository = {
+      const formData = {
         ...values,
         isPrivate: values.visibility === 'private'
       };
-      action.submit({data: newRepository});
+      console.log("HEY TOURE HERE about to submit",formData);
+      action.submit(formData);
     } finally {
       isPending.value = false;
     }
