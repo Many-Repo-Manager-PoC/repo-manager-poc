@@ -1,13 +1,13 @@
 import {
   component$,
 } from "@builder.io/qwik";
-
+import type { Dependency } from "~/types";
 interface DependencyProps {
-  dependencies: any[];
+  repoDependencies: Dependency;
   packageJsons: any[];
 }
 
-export default component$<DependencyProps>(({ dependencies, packageJsons }) => {
+export default component$<DependencyProps>(({ repoDependencies, packageJsons }) => {
   return (
     <div class="container container-center">
       <div role="presentation" class="ellipsis"></div>
@@ -19,8 +19,9 @@ export default component$<DependencyProps>(({ dependencies, packageJsons }) => {
         justifyContent: 'center',
         padding: '2rem'
       }}>
-        {dependencies?.map((dependency, depIndex) => {
-          const packageJson = packageJsons[depIndex];
+        {(() => {
+          console.log("THESE ARE THE REPO DEPENDENCIES", repoDependencies.repo);
+          const packageJson = packageJsons[0];
           const repoPackageNames = packageJson?.devDependencies ? Object.keys(packageJson.devDependencies) : [];
           const repoDependencyNames = packageJson?.dependencies ? Object.keys(packageJson.dependencies) : [];
           const allPackageNames = [...repoPackageNames, ...repoDependencyNames];
@@ -28,7 +29,7 @@ export default component$<DependencyProps>(({ dependencies, packageJsons }) => {
           if (allPackageNames.length === 0) return null;
 
           return (
-            <div key={dependency.sbom?.SPDXID} style={{
+            <div key={repoDependencies.dependencies.sbom?.SPDXID} style={{
               backgroundColor: '#f5f5f5',
               borderRadius: '8px',
               padding: '1.5rem',
@@ -40,7 +41,8 @@ export default component$<DependencyProps>(({ dependencies, packageJsons }) => {
                 margin: '0 0 1rem 0',
                 color: 'black'
               }}>
-                {packageJson?.name || dependency.sbom?.name?.split('/').pop() || '-'}
+                {repoDependencies.repo}
+                {/* {packageJson?.name || repoDependencies.dependencies.sbom?.name?.split('/').pop() || '-'} */}
               </h3>
               
               <div style={{
@@ -50,7 +52,7 @@ export default component$<DependencyProps>(({ dependencies, packageJsons }) => {
               }}>
                 {[...new Set(allPackageNames)].map((packageName) => {
                   const packageName_str = packageName as string;
-                  const packageDetails = dependency.sbom?.packages?.items?.find(
+                  const packageDetails = repoDependencies.dependencies.sbom?.packages?.find(
                     (item: { name: string }) => item.name === packageName_str
                   );
                   const isDev = repoPackageNames.includes(packageName_str);
@@ -102,7 +104,7 @@ export default component$<DependencyProps>(({ dependencies, packageJsons }) => {
               </div>
             </div>
           );
-        })}
+        })()}
       </div>
     </div>
   );

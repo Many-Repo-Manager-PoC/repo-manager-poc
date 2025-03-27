@@ -7,7 +7,7 @@ import {
 import { useNavigate, type DocumentHead } from "@builder.io/qwik-city";
 import { useLocation } from "@builder.io/qwik-city";
 import { ServerDataContext } from "../layout";
-import Dependency from "../../components/starter/dependency/dependency";
+// import Dependency from "../../components/starter/dependencyModule/dependencyModule";
 import Topics from "../../components/starter/topics/topics";
 import { Modal } from '@qwik-ui/headless';
 import styles from "./repositoryDetails.css?inline";
@@ -36,8 +36,8 @@ export default component$(() => {
   const currentRepoDependencies = repo ? 
     repoDependencies.filter((_, index) => packageJsons[index]?.repo === repoName) : [];
 
-  const currentPackageJson = repo ?
-    packageJsons.find(pkg => pkg.repo === repoName) : null;
+//   const currentPackageJson = repo ?
+//     packageJsons.find(pkg => pkg.repo === repoName) : null;
 
   return (
     <div class="container container-center">
@@ -158,7 +158,7 @@ export default component$(() => {
               </h2>
             )}
 
-            <Dependency dependencies={currentRepoDependencies} packageJsons={[currentPackageJson]} />
+            {/* <Dependency dependencies={currentRepoDependencies} packageJsons={[currentPackageJson]} /> */}
           </div>
         </div>
       ) : (

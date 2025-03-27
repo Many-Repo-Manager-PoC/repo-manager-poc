@@ -22,7 +22,6 @@ export const useGetDependenciesForRepo = routeLoader$(async (event) => {
             owner: metadata.owner,
             repo: repo
         })
-
         return {
           repo: repo,
           dependencies: response.data,

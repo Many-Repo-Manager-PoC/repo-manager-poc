@@ -21,25 +21,31 @@ export interface Repo {
   }
 
   export interface Dependency {
-    sbom: {
-      spdxVersion: string;
-      dataLicense: string;
-      SPDXID: string;
-      relationshipType: string;
-      name: string;
+    repo: string;
+    dependencies: {
+      sbom: {
+        spdxVersion: string;
+        dataLicense: string;
+        SPDXID: string;
+        relationshipType: string;
+        name: string;
       documentNamespace: string;
       creationInfo: {
         created: string;
         creators: string[];
       };
-      packages: {
-        items: Package[];
-      };
-      relationships: {
-        dependencies: Dependency[];
-      };
+      packages: Package[];
     };
+      relationships: Relationship[];
   }
+  error:null;
+}
+
+export interface Relationship {
+  spdxElementId: string;
+  relationshipType: string;
+  relatedSpdxElement: string;
+}
 
   export interface PackageJson {
     name: string;
@@ -82,12 +88,12 @@ export interface Repo {
 
   export interface Package {
     name: string;
+    SPDXID: string;
+    licenseConcluded: string;
+    externalRefs: []
     downloadLocation: string;
     versionInfo: string;
     filesAnalyzed: boolean;
-    packages: {
-      items: Package[];
-    };
   }
   
   export interface Member {
