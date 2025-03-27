@@ -13,30 +13,31 @@ import { Modal } from '@qwik-ui/headless';
 import styles from "./repositoryDetails.css?inline";
 
 import { usePutTopics } from "../../api/putTopics";
-export  {usePutTopics } from "../../api/putTopics";
-
+export { usePutTopics } from "../../api/putTopics";
 
 export default component$(() => {
   const location = useLocation();
   const repoName = location.url.searchParams.get('repo');
   const serverData = useContext(ServerDataContext);
   const nav = useNavigate();
-  const repo = serverData.repos.find(r => r.name === repoName);
-  const repoDependencies = serverData.dependencies;
-  const packageJsons = serverData.packageJsons;
+  
+  // Find the repository and its dependencies
+  const repo = serverData.repos?.find(r => r.name === repoName);
+  const repoDependencies = serverData.dependencies || [];
+  const packageJsons = serverData.packageJsons || [];
+  
+  // Initialize tags signal with repo topics or empty array
   const tags = useSignal<string[]>(repo?.topics || []);
   const action = usePutTopics();
 
   useStyles$(styles);
 
   // Filter dependencies for current repo
-  const currentRepoDependencies = repo ?
-    repoDependencies?.filter((_, index) => {
-      return packageJsons[index]?.repo === repoName;
-    }) : [];
+  const currentRepoDependencies = repo ? 
+    repoDependencies.filter((_, index) => packageJsons[index]?.repo === repoName) : [];
 
   const currentPackageJson = repo ?
-    packageJsons?.find(pkg => pkg.name === repoName) : null;
+    packageJsons.find(pkg => pkg.repo === repoName) : null;
 
   return (
     <div class="container container-center">
@@ -100,9 +101,9 @@ export default component$(() => {
                         const remainingTags = tags.value.filter(t => !tagsToRemove.includes(t));
                         tags.value = [...new Set([...remainingTags, ...newTags])];
                         action.submit({
-                            repo: repo.name,
-                            topics: tags.value
-                          })
+                          repo: repo.name,
+                          topics: tags.value
+                        });
                       }}
                       type="button"
                       class="modalClose"

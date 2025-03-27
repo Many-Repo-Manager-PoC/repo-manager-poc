@@ -1,78 +1,71 @@
 import metadata from "../../../metadata.json";
 import { routeAction$ } from '@builder.io/qwik-city';
- 
-// replaces all the topics for a given repo
+import { Octokit } from "octokit";
+
+// replaces all the topics for a single repo
 // eslint-disable-next-line qwik/loader-location
 export const usePutTopics = routeAction$(async (data, event) => {
-  // This will only run on the server when the user submits the form (or when the action is called programmatically)
   const session = event.sharedMap.get("session");
   const accessToken = session?.user?.accessToken;
-  const repo = data.repo;
-  const topics = data.topics;
+  const repo = data.repo as string;
+  const topics = data.topics as string[];
+
   try {
-    const response = await fetch(`https://api.github.com/repos/${metadata.owner}/${repo}/topics`, {
-      method: "PUT",
-      headers: {
-        Accept: "application/json",
-        "User-Agent": "Cloudflare Worker",
-        Authorization: `Bearer ${accessToken}`, 
-      },
-      body: JSON.stringify({
-          names: topics
-      })
+    const octokit = new Octokit({
+      auth: accessToken
     });
 
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    await octokit.rest.repos.replaceAllTopics({
+      owner: metadata.owner,
+      repo: repo,
+      names: topics,
+    });
 
     return {
-        success: true,
-      };
+      success: true
+    };
 
   } catch (error) {
-    console.error("Error fetching repos:", error);
+    console.error("Error updating topics:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error occurred"
+    };
   }
-
 });
 
 // replaces all the topics for a given set of repos
 // eslint-disable-next-line qwik/loader-location
 export const usePutBulkTopics = routeAction$(async (data, event) => {
-    // This will only run on the server when the user submits the form (or when the action is called programmatically)
-    const session = event.sharedMap.get("session");
-    const accessToken = session?.user?.accessToken;
-    const repos = data.repos as string[];
-    const reposTopics = data.reposTopics as Record<string, string[]>;
-    console.log("BULK UPDATE DATA:", {repos, reposTopics}); // Debug log
+  const session = event.sharedMap.get("session");
+  const accessToken = session?.user?.accessToken;
+  const repos = data.repos as string[];
+  const reposTopics = data.reposTopics as Record<string, string[]>;
 
-    try {
-      await Promise.all(repos.map(async (repo) => {
-        console.log(`Updating repo ${repo} with topics:`, reposTopics[repo]); // Debug log
-        const response = await fetch(`https://api.github.com/repos/${metadata.owner}/${repo}/topics`, {
-          method: "PUT",
-          headers: {
-            Accept: "application/json", 
-            "User-Agent": "Cloudflare Worker",
-            Authorization: `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify({
-            names: reposTopics[repo]
-          })
-        });
+  try {
+    const octokit = new Octokit({
+      auth: accessToken
+    });
 
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error(`Error for ${repo}:`, errorText); // Debug log
-          throw new Error(`HTTP error for ${repo}! status: ${response.status} - ${errorText}`);
-        }
+    await Promise.all(repos.map(async (repo) => {
+      console.log(`Updating repo ${repo} with topics:`, reposTopics[repo]); // Debug log
+      
+      await octokit.rest.repos.replaceAllTopics({
+        owner: metadata.owner,
+        repo: repo,
+        names: reposTopics[repo],
+      });
+    }));
 
-        return response;
-      }));
+    return {
+      success: true
+    };
 
-      return {
-        success: true
-      };
-
-    } catch (error) {
-      console.error("Error updating repo topics:", error);
-    }
-  });
+  } catch (error) {
+    console.error("Error updating repo topics:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error occurred"
+    };
+  }
+});

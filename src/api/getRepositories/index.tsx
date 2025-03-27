@@ -1,42 +1,33 @@
-import { type Repo } from "../../types/index";
 import { routeLoader$ } from "@builder.io/qwik-city";
 import metadata from "../../../metadata.json";
+import { Octokit } from "octokit";
 
 // gets all repos from the given owner and given list of repos in metadata.json
 // eslint-disable-next-line qwik/loader-location
 export const useGetRepos = routeLoader$(async (event) => {
   const session = event.sharedMap.get("session");
   const accessToken = session?.user?.accessToken;
-
-  // Set initial state in shared map
-  event.sharedMap.set('repos', metadata.repositories);
-  const urls = metadata.repositories.map((repoName) => `https://api.github.com/repos/${metadata.owner}/${repoName}`);
-
-
-
   try {
-    const repositories = await Promise.all(urls.map(async (url) => {
-      const response = await fetch(url, {
-        headers: {
-          Accept: "application/json",
-          "User-Agent": "Cloudflare Worker",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+    const octokit = new Octokit({
+      auth: accessToken
+    });
 
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      return await response.json();
-
-    /// these 3 lines are for getting the repo names from the repose 
-    //   const reposData: { name: string }[] = await response.json();
-    //   const repoNames = reposData.map((repo: { name: string }) => repo.name);
-    //   event.sharedMap.set('repos', repoNames);
-    }));
-
-    return repositories as Repo[];
+    // Set initial state in shared map
+    event.sharedMap.set('repos', metadata.repositories);
+    
+    const repositories = await Promise.all(
+      metadata.repositories.map(async (repoName) => {
+        const { data } = await octokit.rest.repos.get({
+          owner: metadata.owner,
+          repo: repoName
+        });
+        return data;
+      })
+    );
+    return repositories;
   } catch (error) {
     console.error("Error fetching repos:", error);
-    return [] as Repo[];
+    return [];
   }
 });
 
@@ -45,25 +36,22 @@ export const useGetRepos = routeLoader$(async (event) => {
 export const useGetRepo = routeLoader$(async (event) => {
     const session = event.sharedMap.get("session");
     const accessToken = session?.user?.accessToken;
-    const repo = event.sharedMap.get("repos");
-  
     try {
-      const response = await fetch(`https://api.github.com/repos/${metadata.owner}/${repo.name}`, {
-        headers: {
-          Accept: "application/json",
-          "User-Agent": "Cloudflare Worker",
-          Authorization: `Bearer ${accessToken}`, 
-        },
+      const octokit = new Octokit({
+        auth: accessToken
       });
   
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-  
-      const currentRepository = await response.json();
-      event.sharedMap.set('currentRepository', currentRepository);
+      // Set initial state in shared map
+      const repo = event.sharedMap.get("repos");
+      
+      const repository =  await octokit.rest.repos.get({
+            owner: metadata.owner,
+            repo: repo.name
+        });
 
-      return currentRepository as string[]; // Return repo name as string array
+      return repository;
     } catch (error) {
-      console.error("Error fetching repos:", error);
-      return [] as string[]; // Return empty string array on error
+      console.error("Error fetching repository:", error);
+      return [];
     }
   });
