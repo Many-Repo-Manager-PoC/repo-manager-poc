@@ -4,10 +4,11 @@ import {
 import type { Dependency } from "~/types";
 interface DependencyProps {
   repoDependencies: Dependency;
-  packageJsons: any[];
+  packageJsons?: any[];
+  repoDetails?: boolean;
 }
 
-export default component$<DependencyProps>(({ repoDependencies, packageJsons }) => {
+export default component$<DependencyProps>(({ repoDependencies,repoDetails }) => {
   return (
     <div class="container container-center">
       <div role="presentation" class="ellipsis"></div>
@@ -17,16 +18,12 @@ export default component$<DependencyProps>(({ repoDependencies, packageJsons }) 
         flexWrap: 'wrap',
         gap: '2rem',
         justifyContent: 'center',
-        padding: '2rem'
+        padding: repoDetails ? 0 : '2rem'
       }}>
         {(() => {
-          console.log("THESE ARE THE REPO DEPENDENCIES", repoDependencies.repo);
-          const packageJson = packageJsons[0];
-          const repoPackageNames = packageJson?.devDependencies ? Object.keys(packageJson.devDependencies) : [];
-          const repoDependencyNames = packageJson?.dependencies ? Object.keys(packageJson.dependencies) : [];
-          const allPackageNames = [...repoPackageNames, ...repoDependencyNames];
-
-          if (allPackageNames.length === 0) return null;
+  
+          const reponame = repoDependencies.repo;
+          const repoPackageNames = repoDependencies.dependencies.sbom?.packages?.map((p) => p.name);
 
           return (
             <div key={repoDependencies.dependencies.sbom?.SPDXID} style={{
@@ -41,26 +38,24 @@ export default component$<DependencyProps>(({ repoDependencies, packageJsons }) 
                 margin: '0 0 1rem 0',
                 color: 'black'
               }}>
-                {repoDependencies.repo}
+                {reponame}
                 {/* {packageJson?.name || repoDependencies.dependencies.sbom?.name?.split('/').pop() || '-'} */}
               </h3>
-              
+              <div>
+              {repoDependencies.repo}
+                </div>
               <div style={{
                 display: 'flex',
                 flexDirection: 'column',
                 gap: '0.5rem'
               }}>
-                {[...new Set(allPackageNames)].map((packageName) => {
+                {[...new Set(repoPackageNames)].map((packageName) => {
                   const packageName_str = packageName as string;
                   const packageDetails = repoDependencies.dependencies.sbom?.packages?.find(
                     (item: { name: string }) => item.name === packageName_str
                   );
                   const isDev = repoPackageNames.includes(packageName_str);
-                  const version = isDev 
-                    ? packageJson?.devDependencies?.[packageName_str]
-                    : packageJson?.dependencies?.[packageName_str] || 
-                      packageDetails?.versionInfo || 
-                      '-';
+                  const version = repoPackageNames.includes(packageName_str) ? packageDetails?.versionInfo : null;
 
                   return (
                     <div key={packageName_str} style={{

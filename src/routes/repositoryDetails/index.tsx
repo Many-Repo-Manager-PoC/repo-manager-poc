@@ -7,10 +7,11 @@ import {
 import { useNavigate, type DocumentHead } from "@builder.io/qwik-city";
 import { useLocation } from "@builder.io/qwik-city";
 import { ServerDataContext } from "../layout";
-// import Dependency from "../../components/starter/dependencyModule/dependencyModule";
+import DependencyModule from "../../components/starter/dependencyModule/dependencyModule";
 import Topics from "../../components/starter/topics/topics";
 import { Modal } from '@qwik-ui/headless';
 import styles from "./repositoryDetails.css?inline";
+import { type Dependency } from "../../types";
 
 import { usePutTopics } from "../../api/putTopics";
 export { usePutTopics } from "../../api/putTopics";
@@ -23,8 +24,7 @@ export default component$(() => {
   
   // Find the repository and its dependencies
   const repo = serverData.repos?.find(r => r.name === repoName);
-  const repoDependencies = serverData.dependencies || [];
-  const packageJsons = serverData.packageJsons || [];
+  const repoDependencies:Dependency[]= serverData.dependencies || [];
   
   // Initialize tags signal with repo topics or empty array
   const tags = useSignal<string[]>(repo?.topics || []);
@@ -34,10 +34,7 @@ export default component$(() => {
 
   // Filter dependencies for current repo
   const currentRepoDependencies = repo ? 
-    repoDependencies.filter((_, index) => packageJsons[index]?.repo === repoName) : [];
-
-//   const currentPackageJson = repo ?
-//     packageJsons.find(pkg => pkg.repo === repoName) : null;
+    repoDependencies.filter(dep => dep.repo === repo.name)[0] : null;
 
   return (
     <div class="container container-center">
@@ -48,10 +45,25 @@ export default component$(() => {
 
       {repo ? (
         <div>
-          <h2 class="repoTitle">{repo.name}</h2>
+          <div style={{
+            border: '2px solid orange',
+            borderRadius: '8px',
+            padding: '20px',
+            backgroundColor: 'transparent',
+            marginBottom: '20px',
+            marginTop: '20px',
+            minWidth: '300px',
+            maxWidth: '400px',
+            margin: '20px auto', // Added to center horizontally
+            display: 'flex', // Added for vertical centering of content
+            flexDirection: 'column',
+            alignItems: 'center' // Added for horizontal centering of content
+          }}>
+            <h2 class="repoTitle">{repo.name}</h2>
 
-          <div class="repoDescription">
-            {repo.description || 'No description available'}
+            <div class="repoDescription" style={{ color: 'white' }}>
+              {repo.description || 'No description available'}
+            </div>
           </div>
 
           <div class="tagsContainer">
@@ -152,13 +164,17 @@ export default component$(() => {
               </a>
             </div>
 
-            {currentRepoDependencies.length > 0 && (
-              <h2 class="dependenciesTitle">
-                Dependencies
-              </h2>
+            {currentRepoDependencies && (
+              <>
+                <h2 class="dependenciesTitle" style={{ margin: 0 }}>
+                  Dependencies
+                </h2>
+                <DependencyModule 
+                  repoDependencies={currentRepoDependencies}
+                  repoDetails={true}
+                />
+              </>
             )}
-
-            {/* <Dependency dependencies={currentRepoDependencies} packageJsons={[currentPackageJson]} /> */}
           </div>
         </div>
       ) : (

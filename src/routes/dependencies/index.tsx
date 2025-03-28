@@ -18,13 +18,15 @@ export default component$(() => {
       <h1>
         <span class="highlight">Repo</span> Dependencies
       </h1>
-      {repoDependencies.map((dependency: DependencyType, index: number) => (
-        <DependencyModule
-          key={dependency.repo}
-          repoDependencies={dependency}
-          packageJsons={[packageJsons[index]]}
-        />
-      ))}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem', padding: '1rem' }}>
+        {repoDependencies.map((dependency: DependencyType, index: number) => (
+          <DependencyModule
+            key={dependency.repo}
+            repoDependencies={dependency}
+            packageJsons={[packageJsons[index]]}
+          />
+        ))}
+      </div>
     </div>
   );
 });
