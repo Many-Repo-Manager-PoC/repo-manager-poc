@@ -55,6 +55,16 @@ export default component$(() => {
         >
           Create Repository
         </button>
+        <button
+          onClick$={() => nav('/manageRepositories')}
+          style={{
+            padding: '1rem 2rem',
+            fontSize: '1.2rem',
+            cursor: 'pointer'
+          }}
+        >
+          Manage Repositories
+        </button>
       </div>
     </div>
   );

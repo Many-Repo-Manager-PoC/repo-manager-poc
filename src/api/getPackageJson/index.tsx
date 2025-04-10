@@ -34,38 +34,3 @@
       return [];
     }
   });
-
-          
-          
-          
-
-
-          
-//           const packageJson = await response.json() as {content: string};
-//           const content:PackageJson = JSON.parse(atob(packageJson.content));
- 
-//           return {
-//             devDependencies:content.devDependencies,
-//             name: content.name,
-//             version: content.version,
-//             dependencies: content.dependencies,
-//             repo: repo,
-//           };
-//         } catch (error) {
-//           console.error(`Error fetching dependencies for ${repo}:`, error);
-//           return {
-//             name: '',
-//             version: '',
-//             dependencies: {},
-//             devDependencies: {},
-//             repo: repo,
-//           } as PackageJson;
-//         }
-//       }));
-
-//       return packageJsons;
-//     } catch (error) {
-//       console.error("Error in useGetPackageJson:", error);
-//       return [];
-//     }
-//   });
