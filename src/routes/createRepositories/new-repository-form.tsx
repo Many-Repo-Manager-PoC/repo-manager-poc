@@ -38,7 +38,6 @@ export const NewRepositoryForm = component$(({ repoType }: { repoType: string })
   const isPending = useSignal(false);
   const action = usePostNewUserRepository();
   useStyles$(styles);
-  console.log("HEY TOURE HERE AT THE FORM",repoType);
   const [, { Form, Field }] = useForm<NewRepositoryForm>({
     loader: {
       value: {
@@ -64,12 +63,12 @@ export const NewRepositoryForm = component$(({ repoType }: { repoType: string })
         squashMergeCommitTitle: "",
         squashMergeCommitMessage: "",
         mergeCommitTitle: "",
-        mergeCommitMessage: ""
+        mergeCommitMessage: "",
       }
     },
     validate: zodForm$(newRepositorySchema)
   });
-
+  console.log(repoType);
   const handleSubmit = $((values: NewRepositoryForm) => {
     isPending.value = true;
     try {
@@ -77,7 +76,6 @@ export const NewRepositoryForm = component$(({ repoType }: { repoType: string })
         ...values,
         isPrivate: values.visibility === 'private'
       };
-      console.log("HEY TOURE HERE about to submit",formData);
       action.submit(formData);
     } finally {
       isPending.value = false;

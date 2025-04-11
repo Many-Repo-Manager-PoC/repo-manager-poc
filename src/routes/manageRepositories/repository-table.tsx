@@ -14,15 +14,12 @@ export const RepositoryTable = component$(() => {
           <div key={repo.id}>
             <div class="flex justify-between items-center p-4">
               <div>
-                <h3 class="text-lg font-semibold">{repo.name}</h3>
-                <p class="text-sm text-gray-600">{repo.description}</p>
+                <h3 class="highlight text-lg font-bold">{repo.name}</h3>
+                <p class="text-sm text-white-600 ">{repo.description}</p>
               </div>
               <div class="flex gap-2">
                 <button class="border-none bg-blue-500 text-white px-4 py-2 rounded">
                   Edit
-                </button>
-                <button class="border-none bg-red-500 text-white px-4 py-2 rounded">
-                  Delete
                 </button>
               </div>
             </div>

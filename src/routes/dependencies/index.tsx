@@ -10,8 +10,9 @@ import type { Dependency as DependencyType } from "~/types";
 export default component$(() => {
   const serverData = useContext(ServerDataContext);
   const repoDependencies = serverData.dependencies;
-  console.log("THESE ARE THE REPO DEPENDENCIES", repoDependencies);
+
   const packageJsons = serverData.packageJsons;
+
 
   return (
     <div>
@@ -19,11 +20,11 @@ export default component$(() => {
         <span class="highlight">Repo</span> Dependencies
       </h1>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem', padding: '1rem' }}>
-        {repoDependencies.map((dependency: DependencyType, index: number) => (
+        {repoDependencies.map((dependency: DependencyType) => (
           <DependencyModule
             key={dependency.repo}
             repoDependencies={dependency}
-            packageJsons={[packageJsons[index]]}
+            packageJsons={packageJsons.find(pkg => pkg.repo === dependency.repo)}
           />
         ))}
       </div>

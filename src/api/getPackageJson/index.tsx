@@ -15,19 +15,34 @@
         auth: accessToken
       });
 
-      const repos = metadata.dependencyPaths;
+      const paths = metadata.dependencyPaths;
       await event.resolveValue(useGetDependenciesForRepo);
 
-      const packageJsons = await Promise.all(
-        repos.map(async (repoName) => {
-          const { data } = await octokit.rest.repos.getContent({
-            owner: metadata.owner,
-            repo: repoName,
-            path: "package.json"
-          });
-          return data;
+      const packageJsons: Array<{
+        repo: string;
+        packageJson: any;
+        error: string | null;
+      }> = await Promise.all(
+        paths.map(async (path: string[]) => {
+            const { data } = await octokit.rest.repos.getContent({
+              owner: metadata.owner,
+              repo: path[0],
+              path: path[1],
+              mediaType: {
+                format: "object"
+              }
+            });
+            const content = atob((data as { content: string }).content || "");
+            const packageJson = JSON.parse(content);
+            return {
+              repo: path[0],
+              packageJson,
+              error: null
+            };
+
         })
       );
+
       return packageJsons;
     } catch (error) {
       console.error("Error fetching package.json:", error);

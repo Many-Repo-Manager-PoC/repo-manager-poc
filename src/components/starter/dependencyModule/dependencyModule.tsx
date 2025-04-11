@@ -1,10 +1,11 @@
 import {
   component$,
 } from "@builder.io/qwik";
+// import { ServerDataContext } from "~/routes/layout";
 import type { Dependency } from "~/types";
 interface DependencyProps {
   repoDependencies: Dependency;
-  packageJsons?: any[];
+  packageJsons?: any;
   repoDetails?: boolean;
 }
 
@@ -22,8 +23,11 @@ export default component$<DependencyProps>(({ repoDependencies,repoDetails }) =>
       }}>
         {(() => {
   
-          const reponame = repoDependencies.repo;
+          const reponame = repoDependencies.dependencies.sbom?.name?.split('/').pop() || '-';
           const repoPackageNames = repoDependencies.dependencies.sbom?.packages?.map((p) => p.name);
+
+          // const repoDependencies1 = packageJsons?.packageJson?.dependencies;
+          // const repoDevDependencies2 = packageJsons?.packageJson?.devDependencies;
 
           return (
             <div key={repoDependencies.dependencies.sbom?.SPDXID} style={{
@@ -39,10 +43,10 @@ export default component$<DependencyProps>(({ repoDependencies,repoDetails }) =>
                 color: 'black'
               }}>
                 {reponame}
-                {/* {packageJson?.name || repoDependencies.dependencies.sbom?.name?.split('/').pop() || '-'} */}
+                {/* {repoDependencies.dependencies.sbom?.name?.split('/').pop() || '-'} */}
               </h3>
               <div>
-              {repoDependencies.repo}
+              {reponame}
                 </div>
               <div style={{
                 display: 'flex',
@@ -50,13 +54,20 @@ export default component$<DependencyProps>(({ repoDependencies,repoDetails }) =>
                 gap: '0.5rem'
               }}>
                 {[...new Set(repoPackageNames)].map((packageName) => {
-                  const packageName_str = packageName as string;
+                  const packageName_str = packageName.startsWith('com') ? packageName.split('/').pop() : packageName;
+                  // const devDependencies = repoDependencies.devDependencies.sbom?.packages?.find(
+                  //   (item: { name: string }) => item.name === packageName_str
+                  // );
+
                   const packageDetails = repoDependencies.dependencies.sbom?.packages?.find(
                     (item: { name: string }) => item.name === packageName_str
                   );
-                  const isDev = repoPackageNames.includes(packageName_str);
-                  const version = repoPackageNames.includes(packageName_str) ? packageDetails?.versionInfo : null;
 
+        
+                  // const isDev = packageJsons?.some(pkgJson => pkgJson.devDependencies?.[packageName_str] !== undefined);
+                  const version = repoPackageNames.includes(packageName_str || "") ? packageDetails?.versionInfo : null;
+                  // TODO: REMOVE THIS HARDCODED 
+                  const isDev = true;
                   return (
                     <div key={packageName_str} style={{
                       backgroundColor: 'white',

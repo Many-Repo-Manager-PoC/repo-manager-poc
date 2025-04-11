@@ -14,7 +14,7 @@ export const useGetDependenciesForRepo = routeLoader$(async (event) => {
       auth: accessToken
     });
 
-    const repos = metadata.dependencyPaths;
+    const repos = metadata.repositories;
 
     const allDependencies = await Promise.all(repos.map(async (repo: string) => {
       try {

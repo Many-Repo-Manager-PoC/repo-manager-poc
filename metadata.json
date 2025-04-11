@@ -8,11 +8,13 @@
       ],
       "owner": "nabrams",
       "dependencyPaths": [
-        "repo-with-one-dependency",
-        "repo-with-two-dependencies",
-        "repo-with-no-dependencies",
-        "repo-with-also-one-dependency",
-        "repo-with-all-dependencies"
+        ["repo-with-one-dependency", "package.json"],
+        ["repo-with-two-dependencies", "dep-one/package.json"],
+        ["repo-with-two-dependencies", "dep-two/package.json"],
+        ["repo-with-no-dependencies", "package.json"],
+        ["repo-with-also-one-dependency", "package.json"],
+        ["repo-with-all-dependencies", "package.json"],
+        ["design-system-repo", "package.json"]
       ],
   "repo" :{ 
     "id": 368917877,
