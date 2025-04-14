@@ -8,33 +8,28 @@ import { useNavigate, type DocumentHead } from "@builder.io/qwik-city";
 import { useLocation } from "@builder.io/qwik-city";
 import { ServerDataContext } from "../layout";
 import DependencyModule from "../../components/starter/dependencyModule/dependencyModule";
+import DependencyManagerModule from "../../components/starter/dependencyManagerModule/dependencyManagerModule";
 import Topics from "../../components/starter/topics/topics";
 import { Modal } from '@qwik-ui/headless';
 import styles from "./repositoryDetails.css?inline";
-import { type Dependency } from "../../types";
 
 import { usePutTopics } from "../../api/putTopics";
 export { usePutTopics } from "../../api/putTopics";
 
 export default component$(() => {
+  useStyles$(styles);
   const location = useLocation();
   const repoName = location.url.searchParams.get('repo');
   const serverData = useContext(ServerDataContext);
   const nav = useNavigate();
-  
-  // Find the repository and its dependencies
   const repo = serverData.repos?.find(r => r.name === repoName);
-  const repoDependencies:Dependency[]= serverData.dependencies || [];
+  const currentRepoPackageJson = serverData.packageJsons?.find(p => p.repo === repoName) || null;
   
   // Initialize tags signal with repo topics or empty array
   const tags = useSignal<string[]>(repo?.topics || []);
   const action = usePutTopics();
-
-  useStyles$(styles);
-
-  // Filter dependencies for current repo
-  const currentRepoDependencies = repo ? 
-    repoDependencies.filter(dep => dep.repo === repo.name)[0] : null;
+  const currentPackageJson = serverData.packageJsons?.find(p => p.repo === repoName)?.packageJson || null;
+  console.log(repo?.topics?.includes('design-system') );
 
   return (
     <div class="container container-center">
@@ -54,10 +49,10 @@ export default component$(() => {
             marginTop: '20px',
             minWidth: '300px',
             maxWidth: '400px',
-            margin: '20px auto', // Added to center horizontally
-            display: 'flex', // Added for vertical centering of content
+            margin: '20px auto',
+            display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center' // Added for horizontal centering of content
+            alignItems: 'center'
           }}>
             <h2 class="repoTitle">{repo.name}</h2>
 
@@ -164,17 +159,30 @@ export default component$(() => {
               </a>
             </div>
 
-            {currentRepoDependencies && (
-              <>
+            <div style={{ display: 'flex', gap: '20px', marginTop: '20px' }}>
+              <div style={{ flex: 1 }}>
                 <h2 class="dependenciesTitle" style={{ margin: 0 }}>
                   Dependencies
                 </h2>
                 <DependencyModule 
-                  repoDependencies={currentRepoDependencies}
                   repoDetails={true}
+                  packageJsons={currentRepoPackageJson}
                 />
-              </>
-            )}
+              </div>
+
+              {repo.topics?.includes('design-system') && (
+                <div style={{ flex: 1 }}>
+                  <h2 class="dependenciesTitle" style={{ margin: 0 }}>
+                    Dependency Manager
+                  </h2>
+                  <DependencyManagerModule 
+                    packageJsons={serverData.packageJsons}
+                    repoName={currentPackageJson?.name || ''}
+                    repoVersion={currentPackageJson?.version || ''}
+                  />
+                </div>
+              )}
+            </div>
           </div>
         </div>
       ) : (

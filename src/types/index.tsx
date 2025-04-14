@@ -48,11 +48,14 @@ export interface Relationship {
 }
 
   export interface PackageJson {
-    name: string;
-    version: string;
-    dependencies: Record<string, string>;
-    devDependencies: Record<string, string>;
     repo: string;
+    packageJson: {
+      name: string;
+      version: string;
+      dependencies: Record<string, string>;
+      devDependencies: Record<string, string>;
+    }
+    error?: string;
   }
 
 

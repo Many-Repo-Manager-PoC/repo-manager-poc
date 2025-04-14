@@ -66,7 +66,7 @@ export const NewRepositoryForm = component$(({ repoType }: { repoType: string })
         mergeCommitMessage: "",
       }
     },
-    validate: zodForm$(newRepositorySchema)
+    validate: zodForm$(newRepositorySchema as any)
   });
   console.log(repoType);
   const handleSubmit = $((values: NewRepositoryForm) => {

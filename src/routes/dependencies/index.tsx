@@ -13,7 +13,6 @@ export default component$(() => {
 
   const packageJsons = serverData.packageJsons;
 
-
   return (
     <div>
       <h1>
