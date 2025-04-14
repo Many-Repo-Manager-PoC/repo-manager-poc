@@ -29,7 +29,6 @@ export default component$(() => {
   const tags = useSignal<string[]>(repo?.topics || []);
   const action = usePutTopics();
   const currentPackageJson = serverData.packageJsons?.find(p => p.repo === repoName)?.packageJson || null;
-  console.log(repo?.topics?.includes('design-system') );
 
   return (
     <div class="container container-center">
