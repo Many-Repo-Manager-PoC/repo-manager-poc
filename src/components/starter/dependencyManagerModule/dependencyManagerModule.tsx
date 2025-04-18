@@ -1,7 +1,7 @@
 import {
     component$,
   } from "@builder.io/qwik";
-  
+  import  semver from 'semver';
   interface DependencyProps {
     packageJsons?: any;
     repoName: string;
@@ -10,7 +10,8 @@ import {
   
   export default component$<DependencyProps>(({ packageJsons,repoName,repoVersion }) => {
     const dependentRepos = new Set<[string, string]>();
-    
+    // set min version aka latest version as repo version
+    semver.minVersion(repoVersion)
     packageJsons?.forEach((packageJson: any) => {
       const { dependencies, devDependencies } = packageJson.packageJson || {};
       
@@ -24,6 +25,8 @@ import {
         dependentRepos.add([packageJson.repo, devDependencies[repoName] as string]);
       }
     });
+
+    
 
     return (
       <div class="container container-center">
@@ -59,7 +62,8 @@ import {
               gap: '0.5rem'
             }}>
               {Array.from(dependentRepos).map(([repo, version]) => {
-                const needsUpdate = version < repoVersion;
+                const minVersion = semver.minVersion(repoVersion);
+                const needsUpdate = minVersion && semver.lt(version, minVersion.version);
                 return (
                   <div key={repo} style={{
                     backgroundColor: 'white',
