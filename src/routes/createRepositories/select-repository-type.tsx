@@ -1,4 +1,5 @@
-import { component$, useStyles$, Signal } from "@builder.io/qwik";
+import { component$, useStyles$ } from "@builder.io/qwik";
+import type { Signal } from "@builder.io/qwik";
 import styles from "./createRepositories.css?inline";
 
 export const SelectRepositoryType = component$(({ selectedType }: { selectedType: Signal<string> }) => {
@@ -11,14 +12,15 @@ export const SelectRepositoryType = component$(({ selectedType }: { selectedType
         <select 
           class="select" 
           name="repositoryType" 
+          value={selectedType.value}
           onChange$={(e) => {
             const value = (e.target as HTMLSelectElement).value;
             selectedType.value = value;
           }}
         >
-          <option key="default" value="">Select a type...</option>
-          <option key="user" value="user">User Repository</option>
-          <option key="organization" value="organization">Organization Repository</option>
+          <option value="">Select a type...</option>
+          <option value="user">User Repository</option>
+          <option value="organization">Organization Repository</option>
         </select>
       </div>
     </div>

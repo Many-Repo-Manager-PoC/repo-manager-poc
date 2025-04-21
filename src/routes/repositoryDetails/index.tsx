@@ -22,13 +22,13 @@ export default component$(() => {
   const repoName = location.url.searchParams.get('repo');
   const serverData = useContext(ServerDataContext);
   const nav = useNavigate();
-  const repo = serverData.repos?.find(r => r.name === repoName);
-  const currentRepoPackageJson = serverData.packageJsons?.find(p => p.repo === repoName) || null;
+  const repo = serverData?.repos?.find(r => r.name === repoName);
+  const currentRepoPackageJson = serverData?.packageJsons?.find(p => p.repo === repoName) || null;
   
   // Initialize tags signal with repo topics or empty array
   const tags = useSignal<string[]>(repo?.topics || []);
   const action = usePutTopics();
-  const currentPackageJson = serverData.packageJsons?.find(p => p.repo === repoName)?.packageJson || null;
+  const currentPackageJson = serverData?.packageJsons?.find(p => p.repo === repoName)?.packageJson || null;
 
   return (
     <div class="container container-center">
@@ -99,7 +99,7 @@ export default component$(() => {
                     <Modal.Close
                       onClick$={() => {
                         const inputEl = document.querySelector('.tagInput') as HTMLInputElement;
-                        const newTags = inputEl?.value.split(',').map(t => t.trim()).filter(Boolean);
+                        const newTags = inputEl.value.split(',').map(t => t.trim()).filter(Boolean);
                         const checkedBoxes = document.querySelectorAll('.removeTag:checked');
                         const tagsToRemove = Array.from(checkedBoxes).map(box =>
                           (box.parentElement?.querySelector('span')?.textContent || '')
@@ -136,7 +136,7 @@ export default component$(() => {
                 </div>
 
                 <div class="dateBadge">
-                  Last Updated: {new Date(repo.updated_at).toDateString()}
+                  Last Updated: {repo.updated_at ? new Date(repo.updated_at).toDateString() : ''}
                 </div>
 
                 <div class="statBadge">
@@ -149,7 +149,7 @@ export default component$(() => {
               </div>
 
               <a
-                href={repo.html_url}
+                href={repo.html_url || ''}
                 target="_blank"
                 rel="noopener noreferrer"
                 class="githubLink"
@@ -175,7 +175,7 @@ export default component$(() => {
                     Dependency Manager
                   </h2>
                   <DependencyManagerModule 
-                    packageJsons={serverData.packageJsons}
+                    packageJsons={serverData?.packageJsons}
                     repoName={currentPackageJson?.name || ''}
                     repoVersion={currentPackageJson?.version || ''}
                   />

@@ -1,11 +1,11 @@
 import { component$, createContextId, useContextProvider, useContext } from "@builder.io/qwik";
 import styles from "./infobox.module.css";
 import { repo } from "../../../types/consts";
-import { RouteNavigate } from "@builder.io/qwik-city";
+import type { RouteNavigate } from "@builder.io/qwik-city";
 import type { Repo } from "../../../types/index";
 import Topics from "../topics/topics";
 
-export const RepoContext = createContextId<Repo>('repo-context');
+export const RepoContext = createContextId<Repo | null>('repo-context');
 
 export interface InfoboxProps {
   repo: Repo;
@@ -19,7 +19,7 @@ export default component$((infoboxProps: InfoboxProps) => {
   return (
     <div
       class={styles.root}
-      onClick$={() => infoboxProps.nav?.(`/repositoryDetails?repo=${repoContext.name}`)}
+      onClick$={() => infoboxProps.nav?.(`/repositoryDetails?repo=${repoContext?.name}`)}
       key={repo.full_name}
       style={{
         height: '100%',
@@ -32,11 +32,11 @@ export default component$((infoboxProps: InfoboxProps) => {
         flexDirection: 'column',
         height: '100%'
       }}>
-        <div class={styles.title} style={{ color: 'black' }}>{repoContext.name || ''}</div>
+        <div class={styles.title} style={{ color: 'black' }}>{repoContext?.name || ''}</div>
         <div class={styles.description} style={{
           flex: '1 0 auto'
         }}>
-          {repoContext.description || ''}
+          {repoContext?.description || ''}
         </div>
 
         <div style={{
@@ -44,7 +44,7 @@ export default component$((infoboxProps: InfoboxProps) => {
           gap: '1rem',
           marginTop: '1rem'
         }}>
-          {repoContext.language && (
+          {repoContext?.language && (
             <div style={{
               color: 'rgb(50 64 96)',
               backgroundColor: 'rgb(230, 242, 232)',
@@ -63,7 +63,7 @@ export default component$((infoboxProps: InfoboxProps) => {
             borderRadius: '4px',
             fontSize: '0.9rem'
           }}>
-            {repoContext.license?.name || 'No License'}
+            {repoContext?.license?.name || 'No License'}
           </div>
         </div>
 
@@ -79,7 +79,7 @@ export default component$((infoboxProps: InfoboxProps) => {
             borderRadius: '4px',
             fontSize: '0.9rem'
           }}>
-            Last Updated: {repoContext.updated_at ? new Date(repoContext.updated_at).toDateString() : ''}
+            Last Updated: {repoContext?.updated_at ? new Date(repoContext.updated_at).toDateString() : ''}
           </div>
           <div style={{
                 backgroundColor: '#e3f2fd',
@@ -88,7 +88,7 @@ export default component$((infoboxProps: InfoboxProps) => {
                 borderRadius: '2px',
                 marginRight: '8px'
               }}>
-                ✰ {repoContext.stargazers_count}
+                ✰ {repoContext?.stargazers_count}
               </div>
               <div style={{
                 backgroundColor: '#e3f2fd',
@@ -96,7 +96,7 @@ export default component$((infoboxProps: InfoboxProps) => {
                 padding: '2px 6px',
                 borderRadius: '2px',
               }}>
-                ⚠ {repoContext.open_issues_count}
+                ⚠ {repoContext?.open_issues_count}
               </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center' }}>

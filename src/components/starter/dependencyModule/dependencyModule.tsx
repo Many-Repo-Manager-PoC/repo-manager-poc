@@ -4,13 +4,13 @@ import {
 import type { Dependency } from "~/types";
 
 interface DependencyProps {
-  repoDependencies?: Dependency;
+  repoDependencies?: Dependency | null;
   packageJsons?: any;
   repoDetails?: boolean;
 }
 
 export default component$<DependencyProps>(({ repoDependencies, repoDetails, packageJsons }) => {
-  const reponame = repoDependencies?.dependencies.sbom?.name?.split('/').pop() || packageJsons?.repo;
+  const reponame = repoDependencies?.dependencies?.sbom?.name?.split('/').pop() || packageJsons?.repo;
   const repoVersion = packageJsons?.packageJson?.version;
   const repoProdDependencies = Object.fromEntries(
     Object.entries(packageJsons?.packageJson?.dependencies || {})
@@ -34,7 +34,7 @@ export default component$<DependencyProps>(({ repoDependencies, repoDetails, pac
         justifyContent: 'center',
         padding: repoDetails ? 0 : '2rem'
       }}>
-        <div key={repoDependencies?.dependencies.sbom?.SPDXID} style={{
+        <div key={repoDependencies?.dependencies?.sbom?.SPDXID} style={{
           backgroundColor: '#f5f5f5',
           borderRadius: '8px',
           padding: '1.5rem',

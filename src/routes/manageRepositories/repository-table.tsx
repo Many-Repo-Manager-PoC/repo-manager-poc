@@ -10,7 +10,7 @@ export const RepositoryTable = component$(() => {
   return (
     <div class="container">
       <div class="flex flex-col gap-2">
-        {serverData.repos.map((repo) => (
+        {serverData?.repos?.map((repo) => (
           <div key={repo.id}>
             <div class="flex justify-between items-center p-4">
               <div>

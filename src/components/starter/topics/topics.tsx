@@ -1,10 +1,10 @@
 import { component$ } from "@builder.io/qwik";
-import { RouteNavigate } from "@builder.io/qwik-city";
+import type { RouteNavigate } from "@builder.io/qwik-city";
 import type { Repo } from "../../../types";
 
 interface TopicsProps {
-  repo?: Repo;
-  topics?: string[];
+  repo?: Repo | null;
+  topics?: string[] | null;
   nav?: RouteNavigate;
 }
 

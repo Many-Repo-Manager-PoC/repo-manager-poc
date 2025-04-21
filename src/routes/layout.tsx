@@ -47,13 +47,13 @@ export const onPost: RequestHandler = async ({ cacheControl }) => {
 // Define the type for server data
 export interface ServerData {
   date: string;
-  repos: Repo[];
-  dependencies: Dependency[];
-  packageJsons: PackageJson[];
+  repos: Repo[] | null;
+  dependencies: Dependency[] | null;
+  packageJsons: PackageJson[] | null;
 }
 
 // Create the context ID outside the component
-export const ServerDataContext = createContextId<ServerData>('server-data');
+export const ServerDataContext = createContextId<ServerData | null>('server-data');
 
 export const useServerTimeLoader = routeLoader$(async (event) => {
   const repos = await event.resolveValue(useGetRepos);

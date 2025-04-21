@@ -142,7 +142,7 @@ export default component$<DependencyProps>(({ packageJsons, repoName, repoVersio
                     </div>
                   )}
                 </Field>
-                <Field name="files">
+                <Field name="files" type="string[]">
                   {(field, props) => (
                     <div class={styles.repoItem}>
                       <label class={styles.repoName}>Files to Update</label>

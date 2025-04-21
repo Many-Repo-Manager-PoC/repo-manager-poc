@@ -1,123 +1,119 @@
 export interface Repo {
-    id: number;
-    full_name: string;
-    name: string;
-    repo: string;
-    html_url: string;
-    url: string;
-    language: string;
-    description: string;
-    updated_at: string;
-    stargazers_count: number;
-    forks_count: number;
-    watchers_count: number;
-    homepage: string;
-    topics: string[];
-    open_issues_count: number;
+    id: number | null;
+    full_name: string | null;
+    name: string | null;
+    repo: string | null;
+    html_url: string | null;
+    url: string | null;
+    language: string | null;
+    description: string | null;
+    updated_at: string | null;
+    stargazers_count: number | null;
+    forks_count: number | null;
+    watchers_count: number | null;
+    homepage: string | null;
+    topics: string[] | null;
+    open_issues_count: number | null;
     license: {
-      name: string;
-    };
-  
-  }
+      name: string | null;
+    } | null;
+}
 
-  export interface Dependency {
-    repo: string;
+export interface Dependency {
+    repo: string | null;
     dependencies: {
       sbom: {
-        spdxVersion: string;
-        dataLicense: string;
-        SPDXID: string;
-        relationshipType: string;
-        name: string;
-      documentNamespace: string;
-      creationInfo: {
-        created: string;
-        creators: string[];
-      };
-      packages: Package[];
-    };
-      relationships: Relationship[];
-  }
-  error:null;
+        spdxVersion: string | null;
+        dataLicense: string | null;
+        SPDXID: string | null;
+        relationshipType: string | null;
+        name: string | null;
+        documentNamespace: string | null;
+        creationInfo: {
+          created: string | null;
+          creators: string[] | null;
+        } | null;
+        packages: Package[] | null;
+      } | null;
+      relationships: Relationship[] | null;
+    } | null;
+    error: string | null;
 }
 
 export interface Relationship {
-  spdxElementId: string;
-  relationshipType: string;
-  relatedSpdxElement: string;
+    spdxElementId: string | null;
+    relationshipType: string | null;
+    relatedSpdxElement: string | null;
 }
 
-  export interface PackageJson {
-    repo: string;
+export interface PackageJson {
+    repo: string | null;
     packageJson: {
-      name: string;
-      version: string;
-      dependencies: Record<string, string>;
-      devDependencies: Record<string, string>;
-    }
-    error?: string;
-  }
+      name: string | null;
+      version: string | null;
+      dependencies: Record<string, string> | null;
+      devDependencies: Record<string, string> | null;
+    } | null;
+    error: string | null;
+}
 
+export interface NewRepository {
+    repoName: string | null;
+    repoDescription: string | null;
+    homepage: string | null;
+    isPrivate: boolean | null;
+    visibility: string | null;
+    hasIssues: boolean | null;
+    hasProjects: boolean | null;
+    hasWiki: boolean | null;
+    hasDownloads: boolean | null;
+    isTemplate: boolean | null;
+    teamId: number | null;
+    autoInit: boolean | null;
+    gitignoreTemplate: string | null;
+    licenseTemplate: string | null;
+    allowSquashMerge: boolean | null;
+    allowMergeCommit: boolean | null;    
+    allowRebaseMerge: boolean | null;
+    allowAutoMerge: boolean | null;
+    deleteBranchOnMerge: boolean | null;
+    useSquashPrTitleAsDefault: boolean | null;
+    squashMergeCommitTitle: string | null;
+    squashMergeCommitMessage: string | null;
+    mergeCommitTitle: string | null;
+    mergeCommitMessage: string | null;
+    customProperties: Record<string, string> | null;
+    hasDiscussions: boolean | null;
+}
 
+export interface Package {
+    name: string | null;
+    SPDXID: string | null;
+    licenseConcluded: string | null;
+    externalRefs: [] | null;
+    downloadLocation: string | null;
+    versionInfo: string | null;
+    filesAnalyzed: boolean | null;
+}
 
-  export interface NewRepository {
-    repoName: string;
-    repoDescription?: string;
-    homepage?: string;
-    isPrivate?: boolean;
-    visibility?: string;
-    hasIssues?: boolean;
-    hasProjects?: boolean;
-    hasWiki?: boolean;
-    hasDownloads?: boolean;
-    isTemplate?: boolean;
-    teamId?: number;
-    autoInit?: boolean;
-    gitignoreTemplate?: string;
-    licenseTemplate?: string;
-    allowSquashMerge?: boolean;
-    allowMergeCommit?: boolean;    
-    allowRebaseMerge?: boolean;
-    allowAutoMerge?: boolean;
-    deleteBranchOnMerge?: boolean;
-    useSquashPrTitleAsDefault?: boolean;
-    squashMergeCommitTitle?: string;
-    squashMergeCommitMessage?: string;
-    mergeCommitTitle?: string;
-    mergeCommitMessage?: string;
-    customProperties?: Record<string, string>;
-    hasDiscussions?: boolean;
-  }
+export interface Member {
+    id: number | null;
+    login: string | null;
+    avatar_url: string | null;
+    html_url: string | null;
+}
 
-  export interface Package {
-    name: string;
-    SPDXID: string;
-    licenseConcluded: string;
-    externalRefs: []
-    downloadLocation: string;
-    versionInfo: string;
-    filesAnalyzed: boolean;
-  }
-  
-  export interface Member {
-    id: number;
-    login: string;
-    avatar_url: string;
-    html_url: string;
-  }
-  
-  export interface Commit {
-    html_url: string;
-    sha: string;
+export interface Commit {
+    html_url: string | null;
+    sha: string | null;
     commit: {
-      message: string;
+      message: string | null;
       author: {
-        name: string;
-        date: string;
-      }
-  
-    };
-    author:{
-      login:string;
-    };
-  }
+        name: string | null;
+        date: string | null;
+      } | null;
+    } | null;
+    author: {
+      login: string | null;
+    } | null;
+}

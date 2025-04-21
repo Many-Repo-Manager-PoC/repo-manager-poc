@@ -21,9 +21,9 @@ export default component$(() => {
   const serverData = useContext(ServerDataContext);
   const searchQuery = useSignal('');
   const selectedTopic = useSignal('');
-  const allTopics = [...new Set(serverData.repos.flatMap((repo: Repo) => repo.topics))];
-  const repoTopicsMap = serverData.repos.reduce((acc: {[key: string]: string[]}, repo: Repo) => {
-    acc[repo.name] = repo.topics;
+  const allTopics = [...new Set(serverData?.repos?.flatMap((repo: Repo) => repo.topics) ?? [])];
+  const repoTopicsMap = serverData?.repos?.reduce((acc: {[key: string]: string[]}, repo: Repo) => {
+    acc[repo.name || ''] = repo.topics || [];
     return acc;
   }, {});
   const selectedRepos = useSignal<string[]>([]);
@@ -33,16 +33,16 @@ export default component$(() => {
   useStyles$(styles);
 
   const handleSelectAll = $(() => {
-    const filteredRepos = serverData.repos
-      .filter(repo => {
+    const filteredRepos = serverData?.repos
+      ?.filter(repo => {
         const matchesSearch = !searchQuery.value || 
-          repo.name.toLowerCase().includes(searchQuery.value.toLowerCase());
+          repo.name?.toLowerCase().includes(searchQuery.value.toLowerCase());
         const matchesTopic = !selectedTopic.value || 
-          repo.topics.includes(selectedTopic.value);
+          repo.topics?.includes(selectedTopic.value);
         return matchesSearch && matchesTopic;
       })
       .map(repo => repo.name);
-    selectedRepos.value = filteredRepos;
+    selectedRepos.value = filteredRepos?.filter((name): name is string => name !== null) ?? [];
   });
 
   const handleDeselectAll = $(() => {
@@ -73,14 +73,14 @@ export default component$(() => {
   const handleSaveChanges = $(() => {
     const updatedRepoTopics: {[key: string]: string[]} = {};
     const inputEl = document.querySelector('.tagInput') as HTMLInputElement;
-    const newTags = inputEl?.value.split(',').map(t => t.trim()).filter(Boolean);
+    const newTags = inputEl.value.split(',').map(t => t.trim()).filter(Boolean);
     const checkedBoxes = document.querySelectorAll('.removeTag:checked');
     const tagsToRemove = Array.from(checkedBoxes).map(box => 
       (box.parentElement?.querySelector('span')?.textContent || '')
     );
 
     for (const repoName of selectedRepos.value) {
-      const currentTags = repoTopicsMap[repoName];
+      const currentTags = repoTopicsMap?.[repoName] ?? [];
       const updatedTags = [...new Set([...currentTags.filter(t => !tagsToRemove.includes(t)), ...newTags])];
       updatedRepoTopics[repoName] = updatedTags;
     }
@@ -130,7 +130,7 @@ export default component$(() => {
                       </Modal.Description>
                       <div class="tagsList">
                         {selectedRepos.value.reduce((allTopics, repoName) => {
-                          const repoTopics = repoTopicsMap[repoName] || [];
+                          const repoTopics = repoTopicsMap?.[repoName] || [];
                           return [...new Set([...allTopics, ...repoTopics])];
                         }, [] as string[]).map((topic) => (
                           <div key={topic} class="tagItem">
@@ -169,7 +169,7 @@ export default component$(() => {
             Tags:
           </span>
           <div onClick$={handleTopicClick}>
-            <Topics topics={allTopics} />
+            <Topics topics={allTopics.filter((topic): topic is string => topic !== null)} />
           </div>
           <input
             type="text"
@@ -188,9 +188,10 @@ export default component$(() => {
         </div>
 
         <div class="repoGrid">
-          {serverData.repos
+          {serverData?.repos &&
+            serverData.repos
             .filter((repo: Repo) => 
-              repo.name.toLowerCase().includes(searchQuery.value.toLowerCase()) &&
+              repo.name?.toLowerCase().includes(searchQuery.value.toLowerCase()) &&
               (!selectedTopic.value || (repo.topics && repo.topics.includes(selectedTopic.value)))
             )
             .map((repo: Repo) => (
@@ -200,8 +201,8 @@ export default component$(() => {
                   <input 
                     type="checkbox" 
                     class="repoCheckbox"
-                    checked={selectedRepos.value.includes(repo.name)}
-                    onChange$={(e) => handleCheckboxChange(e, repo.name)}
+                    checked={selectedRepos.value.includes(repo.name || '')}
+                    onChange$={(e) => handleCheckboxChange(e, repo.name || '')}
                   />
                 )}
               </div>

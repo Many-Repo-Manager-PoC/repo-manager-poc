@@ -68,7 +68,6 @@ export const NewRepositoryForm = component$(({ repoType }: { repoType: string })
     },
     validate: zodForm$(newRepositorySchema as any)
   });
-  console.log(repoType);
   const handleSubmit = $((values: NewRepositoryForm) => {
     isPending.value = true;
     try {
@@ -81,7 +80,7 @@ export const NewRepositoryForm = component$(({ repoType }: { repoType: string })
       isPending.value = false;
     }
   });
-
+  console.log(repoType);
   return (
     <div class="formContainer">
       <h2 class="formHeader">Step 2: Fill in the details</h2>
