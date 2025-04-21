@@ -1,0 +1,64 @@
+on:
+  workflow_dispatch:
+    inputs:
+      trigger:
+        description: 'Manual trigger for updating a package to latest version and subsequent pull requests related packages'
+        required: true
+        default: 'true'
+
+jobs:
+  update-package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Update Package
+        env:
+          GH_API_KEY: ${{ secrets.GH_API_KEY }}
+          REPO_NAME: ${{ inputs.repo-name }}
+          PACKAGE_NAME: ${{ inputs.package-name }}
+          PACKAGE_VERSION: ${{ inputs.package-version }}
+          PR_TITLE: ${{ inputs.pr-title }}
+          PR_BODY: ${{ inputs.pr-body }}
+          OWNER: ${{ inputs.owner }}
+
+        run: |
+          # This script updates a package to its latest version and creates a pull request
+          # It requires the following environment variables:
+          # - GH_API_KEY: GitHub API key for authentication
+          # - REPO_NAME: Name of the repository to update
+          # - PACKAGE_NAME: Name of the package to update
+          # - PACKAGE_VERSION: Version to update to
+          # - PR_TITLE: Title for the pull request
+          # - PR_BODY: Description for the pull request
+          # - OWNER: GitHub organization or user name
+
+          # Clone the repository to make sure we have the latest version      
+          git clone https://github.com/${{ env.OWNER }}/${{ env.REPO_NAME }}.git
+          cd ${{ env.REPO_NAME}}
+
+          # Install the package at the specified version
+          npm install ${{ env.PACKAGE_NAME }}@${{ env.PACKAGE_VERSION }}
+
+          # Configure git user
+          git config --global user.name 'nabrams'
+          git config --global user.email 'nabrams94@gmail.com'
+          
+          # Create a new branch for the update
+          git checkout -b update-${{ env.PACKAGE_NAME }}-${{ env.PACKAGE_VERSION }}
+
+          # Add the updated package to the repository
+          git add .
+
+          # Commit the changes
+          git commit -m "Update ${{ env.PACKAGE_NAME }} to ${{ env.PACKAGE_VERSION }}"
+
+          # Push the changes to the repository
+          git push origin update-${{ env.PACKAGE_NAME }}-${{ env.PACKAGE_VERSION }}
+
+          # Create a pull request
+          gh pr create --title "${{ env.PR_TITLE }}" --body "${{ env.PR_BODY }}" --base main
+
+          # Return to the root directory
+          cd .. && git add . && git commit -m "Update ${{ env.PACKAGE_NAME }} to ${{ env.PACKAGE_VERSION }}" && git push
