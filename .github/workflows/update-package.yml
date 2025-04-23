@@ -59,30 +59,26 @@ jobs:
           # - OWNER: GitHub organization or user name
 
           # Clone the repository to make sure we have the latest version      
-          git clone https://github.com/${{ env.OWNER }}/${{ env.REPO_NAME }}.git
+          git clone https://${{ env.GH_API_KEY }}@github.com/${{ env.OWNER }}/${{ env.REPO_NAME }}.git
           cd ${{ env.REPO_NAME }}
 
           # Install the package in the cloned repository
           npm install ${{ env.PACKAGE_NAME }}@${{ env.PACKAGE_VERSION }} --prefix ${{ env.REPO_NAME }}
 
-          # Configure git user
-          git config --global user.name 'nabrams'
-          git config --global user.email 'nabrams94@gmail.com'
+          # Configure git user for GitHub Actions
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
           
           # Create a new branch for the update
-          git checkout -b update-${{ env.PACKAGE_NAME }}-${{ env.PACKAGE_VERSION }}
-
-          # Add the updated package to the repository
+          git checkout -b update-package-$(echo ${ env.PACKAGE_NAME } | sed 's/^@[^/]*\///')-to-version-${{ env.PACKAGE_VERSION }}
           git add .
-
-          # Commit the changes
           git commit -m "Update ${{ env.PACKAGE_NAME }} to ${{ env.PACKAGE_VERSION }}"
 
           # Push the changes to the repository
-          git push origin update-${{ env.PACKAGE_NAME }}-${{ env.PACKAGE_VERSION }}
+          git push origin update-package-$(echo ${ env.PACKAGE_NAME } | sed 's/^@[^/]*\///')-to-version-${{ env.PACKAGE_VERSION }}
 
           # Create a pull request
           gh pr create --title "${{ env.PR_TITLE }}" --body "${{ env.PR_BODY }}" --base main
 
           # Return to the root directory
-          cd .. && git add . && git commit -m "Update ${{ env.PACKAGE_NAME }} to ${{ env.PACKAGE_VERSION }}" && git push
+          cd .. && git add . && git commit -m "Update ${{ env.PACKAGE_NAME }} to ${{ env.PACKAGE_VERSION }} in ${{ env.REPO_NAME }}" && git push
