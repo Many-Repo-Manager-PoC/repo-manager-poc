@@ -8,6 +8,7 @@ import metadata from "../../../metadata.json";
 export const useGetDependenciesForRepo = routeLoader$(async (event) => {
   const session = event.sharedMap.get("session");
   const accessToken = session?.user?.accessToken;
+  console.log(accessToken);
 
   try {
     const octokit = new Octokit({

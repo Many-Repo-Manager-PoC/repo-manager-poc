@@ -4,24 +4,31 @@ on:
       repo_name:
         description: 'Name of the repository to update'
         required: true
+        type: string
       package_name:
         description: 'Name of the package to update'
         required: true
+        type: string
       package_version:
         description: 'Version to update to'
         required: true
+        type: string
       pr_title:
         description: 'Title for the pull request'
         required: true
+        type: string
       pr_body:
         description: 'Description for the pull request'
         required: true
+        type: string
       owner:
         description: 'GitHub organization or user name'
         required: true
+        type: string
       gh_access_token:
         description: 'GitHub API token for authentication'
         required: true
+        type: string
 
 jobs:
   update-package:
@@ -32,13 +39,13 @@ jobs:
 
       - name: Update Package
         env:
-          GH_API_KEY: ${{ inputs.gh_access_token }}
-          REPO_NAME: ${{ inputs.repo_name }}
-          PACKAGE_NAME: ${{ inputs.package_name }}
-          PACKAGE_VERSION: ${{ inputs.package_version }}
-          PR_TITLE: ${{ inputs.pr_title }}
-          PR_BODY: ${{ inputs.pr_body }}
-          OWNER: ${{ inputs.owner }}
+          GH_API_KEY: ${{ github.event.inputs.gh_access_token || github.event.client_payload.gh_access_token }}
+          REPO_NAME: ${{ github.event.inputs.repo_name || github.event.client_payload.repo_name }}
+          PACKAGE_NAME: ${{ github.event.inputs.package_name || github.event.client_payload.package_name }}
+          PACKAGE_VERSION: ${{ github.event.inputs.package_version || github.event.client_payload.package_version }}
+          PR_TITLE: ${{ github.event.inputs.pr_title || github.event.client_payload.pr_title }}
+          PR_BODY: ${{ github.event.inputs.pr_body || github.event.client_payload.pr_body }}
+          OWNER: ${{ github.event.inputs.owner || github.event.client_payload.owner }}
 
         run: |
           # This script updates a package to its latest version and creates a pull request
