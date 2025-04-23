@@ -65,9 +65,9 @@ jobs:
           # Install the package in the cloned repository
           npm install ${{ env.PACKAGE_NAME }}@${{ env.PACKAGE_VERSION }} --prefix ${{ env.REPO_NAME }}
 
-          # Configure git user
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+            # Configure git user
+            git config --global user.name 'nabrams'
+            git config --global user.email 'nabrams94@gmail.com'
           
           # Create a new branch for the update
           git checkout -b update-${{ env.PACKAGE_NAME }}-${{ env.PACKAGE_VERSION }}
@@ -83,3 +83,6 @@ jobs:
 
           # Create a pull request
           gh pr create --title "${{ env.PR_TITLE }}" --body "${{ env.PR_BODY }}" --base main
+
+          # Return to the root directory
+          cd .. && git add . && git commit -m "Update ${{ env.PACKAGE_NAME }} to ${{ env.PACKAGE_VERSION }}" && git push
