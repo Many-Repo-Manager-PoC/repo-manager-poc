@@ -60,10 +60,10 @@ jobs:
 
           # Clone the repository to make sure we have the latest version      
           git clone https://github.com/${{ env.OWNER }}/${{ env.REPO_NAME }}.git
-          cd ${{ env.REPO_NAME}}
+          cd ${{ env.REPO_NAME }}
 
-          # Install the package at the specified version
-          npm install ${{ env.PACKAGE_NAME }}@${{ env.PACKAGE_VERSION }}
+          # Install the package in the cloned repository
+          npm install ${{ env.PACKAGE_NAME }}@${{ env.PACKAGE_VERSION }} --prefix ${{ env.REPO_NAME }}
 
           # Configure git user
           git config --global user.name 'github-actions[bot]'
