@@ -5,7 +5,7 @@ import {
 import semver from 'semver';
 import { useForm, zodForm$ } from "@modular-forms/qwik";
 import { z } from "zod";
-import { postPullRequest } from "~/api/postPullRequest";
+import { postWorkflowDispatchEvent } from "~/api/postWorkflowDispatchEvent";
 import styles from "./dependencyManagerModule.module.css";
 
 
@@ -24,14 +24,15 @@ const updateSchema = z.object({
 type UpdateForm = z.infer<typeof updateSchema>;
 
 export default component$<DependencyProps>(({ packageJsons, repoName, repoVersion }) => {
+  const formattedRepoName = repoName.split('/').pop();
   const showModal = useSignal(false);
   const selectedRepo = useSignal("");
   const selectedVersion = useSignal("");
-  const action = postPullRequest();
+  const action = postWorkflowDispatchEvent();
   const [, { Form, Field }] = useForm<UpdateForm>({
     loader: {
       value: {
-        title: "",
+        title: `Update Package: ${formattedRepoName} from version ${selectedVersion.value} to ${repoVersion}`,
         message: "This is an automatically generated Pull request from The Kunai Github Repositories Manger. Please review and test before merging into main.",
         files: ["package.json"]
       }
@@ -59,7 +60,7 @@ export default component$<DependencyProps>(({ packageJsons, repoName, repoVersio
       <div class={styles.container}>
         <div key={repoVersion} class={styles.card}>
           <h4 class={styles.heading}>
-            {repoName}
+            {formattedRepoName}
           </h4>
           <h4 class={styles.subheading}>
             Version: {repoVersion}
@@ -112,13 +113,14 @@ export default component$<DependencyProps>(({ packageJsons, repoName, repoVersio
                   devDependencies[repoName] = repoVersion;
                 }
               }
+              console.log(selectedRepo.value, repoVersion, formattedRepoName, selectedVersion.value, values.message);
 
               await action.submit({
-                repo: selectedRepo.value,
-                title: `Update ${repoName} from version ${selectedVersion.value} to ${repoVersion}`,
-                message: values.message,
-                files: values.files,
-                packageJson: updatedPackageJson?.packageJson
+                repo_name: selectedRepo.value,
+                package_version: repoVersion,
+                pr_title: `Update Package: ${formattedRepoName} from version ${selectedVersion.value} to ${repoVersion}`,
+                pr_body: values.message,
+                package_name: repoName,
               });
               showModal.value = false;
             }}>
@@ -128,7 +130,7 @@ export default component$<DependencyProps>(({ packageJsons, repoName, repoVersio
                   {(field, props) => (
                     <div class={styles.repoItem}>
                       <label class={styles.repoName}>Title</label>
-                      <input {...props} type="text" value={`Update ${repoName} from version ${selectedVersion.value} to ${repoVersion}`} class={styles.repoItem} />
+                      <input {...props} type="text" defaultValue={`Update Package: ${formattedRepoName} from version ${selectedVersion.value} to ${repoVersion}`} class={styles.repoItem} />
                       {field.error && <div class={styles.errorText}>{field.error}</div>}
                     </div>
                   )}
@@ -143,13 +145,13 @@ export default component$<DependencyProps>(({ packageJsons, repoName, repoVersio
                   )}
                 </Field>
                 <Field name="files" type="string[]">
-                  {(field, props) => (
+                  {(field) => (
                     <div class={styles.repoItem}>
-                      <label class={styles.repoName}>Files to Update</label>
-                      <select {...props} multiple class={styles.repoItem}>
-                        <option value="package.json" selected>package.json</option>
-                        <option value="package-lock.json">package-lock.json</option>
-                      </select>
+                      <label class={styles.repoName}>Files to be Updated:</label>
+                      <div class={styles.repoFile}>
+                        <div>package.json</div>
+                        <div>package-lock.json</div>
+                      </div>
                       {field.error && <div class={styles.errorText}>{field.error}</div>}
                     </div>
                   )}
