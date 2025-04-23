@@ -1,10 +1,27 @@
 on:
   workflow_dispatch:
     inputs:
-      trigger:
-        description: 'Manual trigger for updating a package to latest version and subsequent pull requests related packages'
+      repo_name:
+        description: 'Name of the repository to update'
         required: true
-        default: 'true'
+      package_name:
+        description: 'Name of the package to update'
+        required: true
+      package_version:
+        description: 'Version to update to'
+        required: true
+      pr_title:
+        description: 'Title for the pull request'
+        required: true
+      pr_body:
+        description: 'Description for the pull request'
+        required: true
+      owner:
+        description: 'GitHub organization or user name'
+        required: true
+      gh_access_token:
+        description: 'GitHub API token for authentication'
+        required: true
 
 jobs:
   update-package:
@@ -42,8 +59,8 @@ jobs:
           npm install ${{ env.PACKAGE_NAME }}@${{ env.PACKAGE_VERSION }}
 
           # Configure git user
-          git config --global user.name 'nabrams'
-          git config --global user.email 'nabrams94@gmail.com'
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           
           # Create a new branch for the update
           git checkout -b update-${{ env.PACKAGE_NAME }}-${{ env.PACKAGE_VERSION }}
@@ -59,6 +76,3 @@ jobs:
 
           # Create a pull request
           gh pr create --title "${{ env.PR_TITLE }}" --body "${{ env.PR_BODY }}" --base main
-
-          # Return to the root directory
-          cd .. && git add . && git commit -m "Update ${{ env.PACKAGE_NAME }} to ${{ env.PACKAGE_VERSION }}" && git push
