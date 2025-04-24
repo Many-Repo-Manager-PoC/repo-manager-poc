@@ -92,6 +92,3 @@ jobs:
               "head": "update-package-${{ env.PACKAGE_NAME }}-to-${{ env.PACKAGE_VERSION }}",
               "base": "main"
             }'
-
-          # Return to the root directory
-          cd .. && git add . && git commit -m "Update ${{ env.PACKAGE_NAME }} to ${{ env.PACKAGE_VERSION }} in ${{ env.REPO_NAME }}" && git push

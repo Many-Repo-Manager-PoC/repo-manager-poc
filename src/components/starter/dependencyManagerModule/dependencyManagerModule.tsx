@@ -113,7 +113,6 @@ export default component$<DependencyProps>(({ packageJsons, repoName, repoVersio
                   devDependencies[repoName] = repoVersion;
                 }
               }
-              console.log(selectedRepo.value, repoVersion, formattedRepoName, selectedVersion.value, values.message);
 
               await action.submit({
                 repo_name: selectedRepo.value,
