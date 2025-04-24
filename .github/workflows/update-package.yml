@@ -83,7 +83,7 @@ jobs:
 
           # Create a pull request using the GitHub API
           curl -X POST \
-            -H "Authorization: token ${{ env.GITHUB_TOKEN }}" \
+            -H "Authorization: token ${{ env.GH_API_KEY }}" \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/${{ env.OWNER }}/${{ env.REPO_NAME }}/pulls \
             -d '{
