@@ -81,8 +81,17 @@ jobs:
           # Push the changes to the repository
           git push origin update-package-${{env.PACKAGE_NAME }}-to-${{ env.PACKAGE_VERSION }}
 
-          # Create a pull request
-          gh pr create --title "${{ env.PR_TITLE }}" --body "${{ env.PR_BODY }}" --base main
+          # Create a pull request using the GitHub API
+          curl -X POST \
+            -H "Authorization: token ${{ env.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${{ env.OWNER }}/${{ env.REPO_NAME }}/pulls \
+            -d '{
+              "title": "${{ env.PR_TITLE }}",
+              "body": "${{ env.PR_BODY }}",
+              "head": "update-package-${{ env.PACKAGE_NAME }}-to-${{ env.PACKAGE_VERSION }}",
+              "base": "main"
+            }'
 
           # Return to the root directory
           cd .. && git add . && git commit -m "Update ${{ env.PACKAGE_NAME }} to ${{ env.PACKAGE_VERSION }} in ${{ env.REPO_NAME }}" && git push
